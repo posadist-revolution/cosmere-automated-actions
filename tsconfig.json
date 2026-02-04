@@ -23,6 +23,9 @@
 			],
 			"@module/*": [
 				"./src/module/*"
+			],
+			"@system/*": [
+				"./src/declarations/cosmere-rpg/*"
 			]
 		}
 	},

@@ -1,4 +1,4 @@
-import { ActionCostType } from "../system/types/cosmere";
+import { ActionCostType } from "../types/cosmere";
 
 interface ShowConsumeDialogOptions {
     /**

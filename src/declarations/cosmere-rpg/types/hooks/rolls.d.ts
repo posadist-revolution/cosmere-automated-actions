@@ -1,0 +1,47 @@
+import { CosmereDocument } from '@system/types/utils';
+import { HOOKS } from '@system/constants/hooks';
+export type PreRoll = (roll: globalThis.Roll, source: CosmereDocument, options?: unknown) => boolean;
+export type PreSkillRoll = PreRoll;
+export type PreItemRoll = PreRoll;
+export type PreAttackRoll = PreRoll;
+export type PreDamageRoll = PreRoll;
+export type PreInjuryTypeRoll = PreRoll;
+export type PreInjuryDurationRoll = PreRoll;
+export type PreShortRestRecoveryRoll = PreRoll;
+export type Roll = ((roll: globalThis.Roll, source: CosmereDocument, options?: unknown) => void) | ((roll: globalThis.Roll, tableResult: TableResult, source: CosmereDocument, options?: unknown) => void);
+export type SkillRoll = Roll;
+export type ItemRoll = Roll;
+export type AttackRoll = Roll;
+export type DamageRoll = Roll;
+export type InjuryTypeRoll = Roll;
+export type InjuryDurationRoll = Roll;
+export type ShortRestRecoveryRoll = Roll;
+export type RollConfig<R> = (config: unknown, source: CosmereDocument) => R;
+export type PreRollConfiguration = RollConfig<boolean>;
+export type RollConfiguration = RollConfig<void>;
+export type PreSkillRollConfiguration = PreRollConfiguration;
+export type SkillRollConfiguration = RollConfiguration;
+export type PreItemRollConfiguration = PreRollConfiguration;
+export type ItemRollConfiguration = RollConfiguration;
+export type PreAttackRollConfiguration = PreRollConfiguration;
+export type AttackRollConfiguration = RollConfiguration;
+declare module "@league-of-foundry-developers/foundry-vtt-types/configuration" {
+    namespace Hooks {
+        interface HookConfig {
+            [HOOKS.PRE_INJURY_TYPE_ROLL]: PreInjuryTypeRoll;
+            [HOOKS.INJURY_TYPE_ROLL]: InjuryTypeRoll;
+            [HOOKS.PRE_INJURY_DURATION_ROLL]: PreInjuryDurationRoll;
+            [HOOKS.INJURY_DURATION_ROLL]: InjuryDurationRoll;
+            [HOOKS.PRE_SHORT_REST_RECOVERY_ROLL]: PreShortRestRecoveryRoll;
+            [HOOKS.SHORT_REST_RECOVERY_ROLL]: ShortRestRecoveryRoll;
+            [HOOKS.PRE_ATTACK_ROLL_CONFIGURATION]: PreAttackRollConfiguration;
+            [HOOKS.ATTACK_ROLL_CONFIGURATION]: AttackRollConfiguration;
+            [HOOKS.PRE_DAMAGE_ROLL]: PreDamageRoll;
+            [HOOKS.DAMAGE_ROLL]: DamageRoll;
+            [key: ReturnType<typeof HOOKS.PRE_ROLL>]: PreRoll;
+            [key: ReturnType<typeof HOOKS.ROLL>]: Roll;
+            [key: ReturnType<typeof HOOKS.PRE_ROLL_CONFIGURATION>]: PreRollConfiguration;
+            [key: ReturnType<typeof HOOKS.ROLL_CONFIGURATION>]: RollConfiguration;
+        }
+    }
+}
