@@ -1,11 +1,27 @@
 import { macros, roundIncriment } from "./macros/index.js";
-import { registerModuleSettings } from "./utils/settings.js";
+import { getModuleSetting, registerModuleSettings, SETTINGS } from "./utils/settings.js";
 import { nameToId } from "./utils/helpers.js";
 import { MODULE_ID } from "./utils/constants.js";
 import { applyRollConditions, decrementExhausted } from "./automations/conditions.js";
+import { HOOKS } from "./declarations/cosmere-rpg/constants/hooks.js";
+import { CosmereItem } from "./declarations/cosmere-rpg/documents/item.js";
+import { COSMERE_AUTOMATED_ACTIONS } from "./config.js";
+
+declare global{
+    interface CONFIG {
+        COSMERE_AUTOMATED_ACTIONS: typeof COSMERE_AUTOMATED_ACTIONS;
+    }
+
+    // NOTE: Must use var to affect globalThis
+    // eslint-disable-next-line no-var
+    var cosmereAutomatedActions: {
+		macros: any,
+        roundIncriment: any,
+    };
+}
 
 Hooks.once('init', () => {
-	globalThis.cosmereAutomatedActions = {
+	cosmereAutomatedActions = {
 		macros,
         roundIncriment,
 	}
@@ -14,8 +30,8 @@ Hooks.once('init', () => {
 });
 
 //Automates item actions
-Hooks.on('cosmere-rpg.useItem', (item, _rollConfig, _options) => {
-	if(!game.settings.get(MODULE_ID, "useAutomations")){
+Hooks.on(HOOKS.USE_ITEM, (item, _options) => {
+	if(!getModuleSetting(SETTINGS.USE_AUTOMATIONS)){
 		return;
 	};
     //Gets item ID, checks if item has an associated macro, and then calls it
@@ -28,10 +44,10 @@ Hooks.on('cosmere-rpg.useItem', (item, _rollConfig, _options) => {
 
 //Adds conditions to attack rolls
 //Potentially replace after Roll Refactor
-Hooks.on('cosmere-rpg.attackRoll', (roll, item, _options) => {
-    if(!game.settings.get(MODULE_ID, "automateConditions")){
-        return;
-    };
+Hooks.on(HOOKS.ATTACK_ROLL, (roll: Roll, item: CosmereItem, _options: unknown) => {
+	if(!getModuleSetting(SETTINGS.AUTOMATE_CONDITIONS)){
+		return;
+	};
     const actor = item.actor;
     console.log("CAA | Applying Roll Conditions");
     applyRollConditions(roll, actor);
@@ -39,19 +55,19 @@ Hooks.on('cosmere-rpg.attackRoll', (roll, item, _options) => {
 
 //Adds conditions to skill rolls
 //Potentially replace after Roll Refactor
-Hooks.on('cosmere-rpg.skillRoll', (roll, actor, _options) => {
-    if(!game.settings.get(MODULE_ID, "automateConditions")){
-        return;
-    };
+Hooks.on(HOOKS.SKILL_ROLL, (roll: Roll, actor: CosmereActor, _options: unknown) => {
+	if(!getModuleSetting(SETTINGS.AUTOMATE_CONDITIONS)){
+		return;
+	};
     console.log("CAA | Applying Roll Conditions");
     applyRollConditions(roll, actor);
 });
 
 //Automatically remove one level of exhaustion after long rest
-Hooks.on('cosmere-rpg.rest', (actor, length) => {
-	if(!game.settings.get(MODULE_ID, "decrementExhaustion")){
-        return;
-    };
+Hooks.on(HOOKS.REST, (actor, length) => {
+	if(!getModuleSetting(SETTINGS.DECREMENT_EXHAUSTION)){
+		return;
+	};
 	if(actor.effects.get("condexhausted000") && length === "long"){
 		decrementExhausted(actor);
 	};
@@ -59,12 +75,12 @@ Hooks.on('cosmere-rpg.rest', (actor, length) => {
 
 //Automated items that incriment during combat
 Hooks.on('combatTurnChange', (cosmereCombat) => {
-    if(!game.settings.get(MODULE_ID, "useAutomations")){
+	if(!getModuleSetting(SETTINGS.USE_AUTOMATIONS)){
 		return;
 	};
     //loops through combatants checking each item for a round incrimenting item
     cosmereCombat.turns.forEach((combatant)=>{
-        combatant.actor.items.forEach((item)=>{
+        combatant.actor.items.forEach((item: CosmereItem)=>{
             var itemId = item.system.id;
 	        if(itemId = "new-action"){itemId = nameToId(item.name)};
             const roundIncriment = cosmereAutomatedActions.roundIncriment[itemId];

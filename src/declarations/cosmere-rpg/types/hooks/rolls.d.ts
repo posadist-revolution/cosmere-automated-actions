@@ -38,6 +38,8 @@ declare module "@league-of-foundry-developers/foundry-vtt-types/configuration" {
             [HOOKS.ATTACK_ROLL_CONFIGURATION]: AttackRollConfiguration;
             [HOOKS.PRE_DAMAGE_ROLL]: PreDamageRoll;
             [HOOKS.DAMAGE_ROLL]: DamageRoll;
+            [HOOKS.ATTACK_ROLL]: AttackRoll;
+            [HOOKS.SKILL_ROLL]: SkillRoll;
             [key: ReturnType<typeof HOOKS.PRE_ROLL>]: PreRoll;
             [key: ReturnType<typeof HOOKS.ROLL>]: Roll;
             [key: ReturnType<typeof HOOKS.PRE_ROLL_CONFIGURATION>]: PreRollConfiguration;
