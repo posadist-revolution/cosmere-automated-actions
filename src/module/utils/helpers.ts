@@ -1,5 +1,6 @@
 import { CosmereItem } from "@src/declarations/cosmere-rpg/documents/item";
 import { MODULE_ID } from "./constants";
+import { CosmereActor } from "@src/declarations/cosmere-rpg/documents/actor";
 
 //Module Functions
 export function IsModuleActive(moduleId: string) {
@@ -28,8 +29,7 @@ export async function giveActorItem(actor: CosmereActor, itemUUID: string){
     if (!(itemDocument instanceof Item)) {
         throw new Error(`UUID ${itemUUID} does not reference a valid Item`);
     }
-    //TODO: Type Nonsense
-    const item = await Item.create((itemDocument.toObject()), { parent: actor as unknown as Actor });
+    const item = await Item.create((itemDocument.toObject()), { parent: actor as CosmereActor });
     return item;
 }
 export function getFlags(item: CosmereItem){

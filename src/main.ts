@@ -6,6 +6,7 @@ import { applyRollConditions, decrementExhausted } from "./module/automations/co
 import { HOOKS } from "./declarations/cosmere-rpg/constants/hooks.js";
 import { CosmereItem } from "./declarations/cosmere-rpg/documents/item.js";
 import { COSMERE_AUTOMATED_ACTIONS } from "./module/config.js";
+import { CosmereActor } from "./declarations/cosmere-rpg/documents/actor.js";
 
 declare global{
     interface CONFIG {
@@ -48,8 +49,7 @@ Hooks.on(HOOKS.ATTACK_ROLL, (roll: Roll, item: CosmereItem, _options: unknown) =
 	if(!getModuleSetting(SETTINGS.AUTOMATE_CONDITIONS)){
 		return;
 	};
-    //TODO: Type Nonsense
-    const actor = item.actor as unknown as CosmereActor;
+    const actor = item.actor as CosmereActor;
     console.log("CAA | Applying Roll Conditions");
     applyRollConditions(roll, actor);
 });
@@ -81,7 +81,7 @@ Hooks.on('combatTurnChange', (cosmereCombat) => {
 	};
     //loops through combatants checking each item for a round incrimenting item
     cosmereCombat.turns.forEach((combatant)=>{
-        combatant.actor.items.forEach((item: CosmereItem)=>{
+        combatant.actor.items.forEach((item)=>{
             var itemId = item.system.id;
 	        if(itemId = "new-action"){itemId = nameToId(item.name)};
             const roundIncriment = cosmereAutomatedActions.roundIncriment[itemId];
