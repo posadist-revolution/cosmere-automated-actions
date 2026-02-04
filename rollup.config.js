@@ -2,6 +2,7 @@
 import path from 'path';
 import fs from 'fs';
 
+import typescript from '@rollup/plugin-typescript';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import copy from 'rollup-plugin-copy';
 import commonjs from '@rollup/plugin-commonjs';
@@ -11,7 +12,7 @@ export default CLIArgs => {
     const isRelease = CLIArgs.release || false;
 
     return {
-        input: './src/main.js',
+        input: './src/main.ts',
         output: {
             dir: 'build',
             format: 'es',
@@ -25,6 +26,7 @@ export default CLIArgs => {
 
             // Typescript
             nodeResolve({ preferBuiltins: true }),
+            typescript(),
             commonjs(),
 
             // Copy module.json & templates
