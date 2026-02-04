@@ -1,4 +1,5 @@
 import { CosmereItem } from "@src/declarations/cosmere-rpg/documents/item";
+import { MODULE_ID } from "./constants";
 
 //Module Functions
 export function IsModuleActive(moduleId: string) {
@@ -31,7 +32,7 @@ export async function giveActorItem(actor: CosmereActor, itemUUID: string){
     return item;
 }
 export function getFlags(item: CosmereItem){
-    const cosmereFlags = item.flags["cosmere-automated-actions"];
+    const cosmereFlags = item.flags[MODULE_ID];
     const worldFlags = item.flags["world"];
     if(cosmereFlags){
         return cosmereFlags;

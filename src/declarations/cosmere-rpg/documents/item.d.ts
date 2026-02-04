@@ -1,4 +1,6 @@
 import { ActionCostType } from "../types/cosmere";
+import { SYSTEM_ID } from "../constants";
+import { MODULE_ID } from "@src/module/utils/constants";
 
 interface ShowConsumeDialogOptions {
     /**
@@ -303,6 +305,18 @@ declare module '@league-of-foundry-developers/foundry-vtt-types/configuration' {
     }
     interface FlagConfig {
         Item: {
+            [SYSTEM_ID]: {
+                sheet: {
+                    mode: 'edit' | 'view';
+                };
+                'sheet.mode': 'edit' | 'view';
+                meta: {
+                    origin: ItemOrigin;
+                };
+                'meta.origin': ItemOrigin;
+                previousLevel?: number;
+                isStartingPath?: boolean;
+            },
             [MODULE_ID]: {
                 target: any,
                 caster: any,
