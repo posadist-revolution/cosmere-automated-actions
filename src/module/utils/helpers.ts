@@ -28,6 +28,7 @@ export async function giveActorItem(actor: CosmereActor, itemUUID: string){
     if (!(itemDocument instanceof Item)) {
         throw new Error(`UUID ${itemUUID} does not reference a valid Item`);
     }
+    //TODO: Type Nonsense
     const item = await Item.create((itemDocument.toObject()), { parent: actor as unknown as Actor });
     return item;
 }

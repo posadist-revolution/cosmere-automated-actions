@@ -1,6 +1,6 @@
 
 
-export function applyRollConditions(roll, actor){
+export function applyRollConditions(roll: Roll, actor: CosmereActor){
     if(actor.effects.contents.length === 0){
         console.log("CAA | No effects found");
         return;

@@ -95,3 +95,14 @@ declare class CommonActorDataModel<Schema extends CommonActorData = CommonActorD
      */
     prepareSecondaryDerivedData(): void;
 }
+
+// TODO: This is breaking everything and I have no idea why
+// declare module "@league-of-foundry-developers/foundry-vtt-types/configuration" {
+//     interface DataModelConfig {
+//         Actor: {
+//             'base': typeof CommonActorDataModel;
+//             [ActorType.Character]: typeof CharacterActorDataModel,
+//             [ActorType.Adversary]: typeof AdversaryActorDataModel
+//         }
+//     }
+// }

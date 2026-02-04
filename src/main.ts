@@ -48,7 +48,8 @@ Hooks.on(HOOKS.ATTACK_ROLL, (roll: Roll, item: CosmereItem, _options: unknown) =
 	if(!getModuleSetting(SETTINGS.AUTOMATE_CONDITIONS)){
 		return;
 	};
-    const actor = item.actor;
+    //TODO: Type Nonsense
+    const actor = item.actor as unknown as CosmereActor;
     console.log("CAA | Applying Roll Conditions");
     applyRollConditions(roll, actor);
 });
