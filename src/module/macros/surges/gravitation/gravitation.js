@@ -5,7 +5,7 @@ export async function gravitation(item, actor){
     await foundry.applications.api.DialogV2.wait({
         window: { title: "Gravitation" },
         content: "<p>Which would you like to target?</p>",
-        buttons: 
+        buttons:
         [{
             label: "Character",
             action: "character",

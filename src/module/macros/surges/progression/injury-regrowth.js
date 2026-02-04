@@ -15,7 +15,7 @@ export async function injuryRegrowth(item, actor){
             //Raise cost of permanent injuries by 1 investiture
             const actorInv = actor.system.resources.inv.value;
             const buttonLabel = injury.name + " (-1 inv)";
-            injuryRegrowthButtons.push({ 
+            injuryRegrowthButtons.push({
                 label: buttonLabel,
                 action: injury.uuid,
                 callback: async () => {
@@ -35,7 +35,7 @@ export async function injuryRegrowth(item, actor){
         } else if (injury.system.type === "death") {
             return
         } else {
-            injuryRegrowthButtons.push({ 
+            injuryRegrowthButtons.push({
                 label: injury.name,
                 action: injury.uuid,
                 callback: () => {

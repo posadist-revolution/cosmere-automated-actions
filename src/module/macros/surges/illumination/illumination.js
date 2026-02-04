@@ -32,7 +32,7 @@ export async function illumination(item, actor){
             }
         ]
     })
-    
+
 }
 
 export function dismissComplexIllusion(item){

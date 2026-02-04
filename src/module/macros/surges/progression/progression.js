@@ -6,7 +6,7 @@ export async function progression(item, actor){
     await foundry.applications.api.DialogV2.wait({
         window: { title: "Progression" },
         content: "<p>Which skill would you like to use?</p>",
-        buttons: 
+        buttons:
         [{
             label: "Plant Growth",
             action: "plant growth",

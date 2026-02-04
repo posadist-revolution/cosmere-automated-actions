@@ -105,7 +105,7 @@ export async function division(item, actor){
                         const chatMessageData = {
                             author: game.user,
                             speaker: ChatMessage.getSpeaker({ actor }),
-                            content: `${actor.name} uses ${item.name} on a ${areaSize} object or area`,    
+                            content: `${actor.name} uses ${item.name} on a ${areaSize} object or area`,
                         };
                         await getDocumentClass("ChatMessage").create(chatMessageData);
                     } else {
@@ -113,8 +113,8 @@ export async function division(item, actor){
                         ui.notifications.warn("Not enough investiture for infusion of that size");
                         actor.update({ 'system.resources.inv.value': newInv });
                     };
-                    
-                    
+
+
                 }
             }
         ]
