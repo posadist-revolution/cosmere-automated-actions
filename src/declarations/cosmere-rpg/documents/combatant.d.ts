@@ -1,8 +1,15 @@
+// System Imports
 import { TurnSpeed } from '@system/types/cosmere';
 import { CosmereActor } from './actor';
 import { SYSTEM_ID } from '@system/constants';
-import { MODULE_ID } from '@src/module/constants';
+import { CombatantDataModel } from '@system/data/combatant';
+
+// Module Imports
+import { MODULE_ID } from '@module/constants';
+import { MODULE_COMBATANT_FLAGS } from '@module/config';
+
 export declare class CosmereCombatant extends foundry.documents.Combatant {
+    system: CombatantDataModel;
     static defineSchema(): Combatant.Schema;
     static get schema(): foundry.data.fields.SchemaField<Combatant.Schema>;
     get actor(): CosmereActor;
@@ -33,24 +40,7 @@ declare module '@league-of-foundry-developers/foundry-vtt-types/configuration' {
                 bossFastActivated: boolean;
                 activated: boolean;
             };
-            [MODULE_ID]: {
-                actionsUsed: any;
-                actionsAvailableGroups: any;
-                bossFastActionsUsed: any;
-                bossFastActionsAvailableGroups: any;
-                reactionsUsed: any;
-                reactionsAvailable: any;
-                freeActionsUsed: any;
-                specialActionsUsed: any;
-                bossFastFreeActionsUsed: any;
-                bossFastSpecialActionsUsed: any;
-                flags_initialized_version: string;
-
-                //@deprecated These flags are kept in the configuration to allow for intelligently updating combats in progress to new module versions
-                reactionUsed: boolean;
-                bossFastActionsOnTurn: number;
-                actionsOnTurn: number;
-            }
+            [MODULE_ID]: MODULE_COMBATANT_FLAGS;
         };
     }
 }

@@ -1,4 +1,4 @@
-interface TalentItemData extends IdItemData, TypedItemData<Talent.Type>, DescriptionItemData, ActivatableItemData, DamagingItemData, ModalityItemData {
+export interface TalentItemData extends IdItemData, TypedItemData<Talent.Type>, DescriptionItemData, ActivatableItemData, DamagingItemData, ModalityItemData {
     /**
      * The id of the Path this Talent belongs to.
      */
@@ -46,4 +46,4 @@ interface TalentItemData extends IdItemData, TypedItemData<Talent.Type>, Descrip
     grantRules: Collection<Talent.GrantRule>;
 }
 
-declare class TalentItemDataModel implements TalentItemData, foundry.abstract.TypeDataModel<TalentItemData> {}
+export declare class TalentItemDataModel implements TalentItemData, foundry.abstract.TypeDataModel<TalentItemData> {}

@@ -7,7 +7,7 @@ interface BonusTalentsRule {
     quantity: number;
     restrictions: string;
 }
-interface AncestryItemData extends IdItemData, DescriptionItemData, TalentsProviderData {
+export interface AncestryItemData extends IdItemData, DescriptionItemData, TalentsProviderData {
     size: Size;
     type: {
         id: CreatureType;
@@ -28,7 +28,7 @@ interface AncestryItemData extends IdItemData, DescriptionItemData, TalentsProvi
         bonusTalents: BonusTalentsRule[];
     };
 }
-declare class AncestryItemDataModel implements AncestryItemData extends foundry.abstract.TypeDataModel<AncestryItemData> {
+export declare class AncestryItemDataModel implements AncestryItemData extends foundry.abstract.TypeDataModel<AncestryItemData> {
     get typeFieldId(): foundry.data.fields.StringField;
     get sizeField(): foundry.data.fields.StringField;
     get extraTalents(): TalentGrant[];

@@ -1,4 +1,4 @@
-interface InjuryItemData extends TypedItemData<InjuryType>, DescriptionItemData {
+export interface InjuryItemData extends TypedItemData<InjuryType>, DescriptionItemData {
     duration: {
         /**
          * Rolled duration, in days.
@@ -12,6 +12,6 @@ interface InjuryItemData extends TypedItemData<InjuryType>, DescriptionItemData 
         remaining?: number;
     };
 }
-declare class InjuryItemDataModel implements InjuryItemData, foundry.abstract.TypeDataModel<InjuryItemData> {
+export declare class InjuryItemDataModel implements InjuryItemData, foundry.abstract.TypeDataModel<InjuryItemData> {
     get typeLabel(): string;
 }

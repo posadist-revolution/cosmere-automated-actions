@@ -3,10 +3,10 @@ import { getModuleSetting, registerModuleSettings, SETTINGS } from "./module/uti
 import { nameToId } from "./module/utils/helpers.js";
 import { MODULE_ID } from "./module/utils/constants.js";
 import { applyRollConditions, decrementExhausted } from "./module/automations/conditions.js";
-import { HOOKS } from "./declarations/cosmere-rpg/constants/hooks.js";
-import { CosmereItem } from "./declarations/cosmere-rpg/documents/item.js";
+import { HOOKS } from "@system/constants/hooks.js";
+import { CosmereItem } from "@system/documents/item.js";
 import { COSMERE_AUTOMATED_ACTIONS } from "./module/config.js";
-import { CosmereActor } from "./declarations/cosmere-rpg/documents/actor.js";
+import { CosmereActor } from "@system/documents/actor";
 
 declare global{
     interface CONFIG {

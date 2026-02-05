@@ -1,3 +1,5 @@
+import type { CosmereActiveEffect } from '@system/documents/active-effect';
+
 interface ActiveEffectData {
     /**
      * Whether the effect can stack be stacked.
@@ -8,5 +10,5 @@ interface ActiveEffectData {
      */
     stacks?: number;
 }
-declare class ActiveEffectDataModel implements ActiveEffectData extends foundry.abstract.TypeDataModel<ActiveEffectData, ActiveEffect> {
+export declare class ActiveEffectDataModel extends foundry.abstract.TypeDataModel<ActiveEffectData, CosmereActiveEffect>{
 }

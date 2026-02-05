@@ -1,4 +1,4 @@
-interface TalentTreeItemData {
+export interface TalentTreeItemData {
     /**
      * The list of nodes in the tree
      */

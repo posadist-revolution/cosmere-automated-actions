@@ -1,4 +1,3 @@
-import { ActorType } from "../../types/cosmere";
 interface DeflectData extends Derived<number> {
     /**
      * The natural deflect value for this actor.
@@ -95,14 +94,4 @@ declare class CommonActorDataModel<Schema extends CommonActorData = CommonActorD
      * This is called after Active Effects are applied.
      */
     prepareSecondaryDerivedData(): void;
-}
-
-declare module "@league-of-foundry-developers/foundry-vtt-types/configuration" {
-    interface DataModelConfig {
-        Actor: {
-            'base': typeof CommonActorDataModel;
-            [ActorType.Character]: typeof CharacterActorDataModel,
-            [ActorType.Adversary]: typeof AdversaryActorDataModel
-        }
-    }
 }

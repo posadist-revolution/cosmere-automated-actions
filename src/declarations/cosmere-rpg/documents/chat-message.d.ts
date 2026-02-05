@@ -1,6 +1,6 @@
 import { CosmereActor } from './actor';
 import { CosmereItem } from './item';
-import { SYSTEM_ID } from '../constants';
+import { SYSTEM_ID } from '@system/constants';
 export declare const enum MESSAGE_TYPES {
     SKILL = 'skill',
     ACTION = 'action',

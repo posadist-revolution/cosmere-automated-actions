@@ -1,4 +1,4 @@
-interface PowerItemData extends IdItemData, TypedItemData<PowerType>, DamagingItemData, DescriptionItemData {
+export interface PowerItemData extends IdItemData, TypedItemData<PowerType>, DamagingItemData, DescriptionItemData {
     /**
      * Wether to a custom skill is used, or
      * the skill is derived from the power's id.
@@ -12,4 +12,4 @@ interface PowerItemData extends IdItemData, TypedItemData<PowerType>, DamagingIt
     skill: Skill | null;
 }
 
-declare class PowerItemDataModel implements PowerItemData, foundry.abstract.TypeDataModel<PowerItemData> {}
+export declare class PowerItemDataModel implements PowerItemData, foundry.abstract.TypeDataModel<PowerItemData> {}

@@ -1,4 +1,4 @@
-interface GoalItemData extends IdItemData, DescriptionItemData {
+export interface GoalItemData extends IdItemData, DescriptionItemData {
     /**
      * The progress level of the goal
      */
@@ -9,4 +9,4 @@ interface GoalItemData extends IdItemData, DescriptionItemData {
     rewards: Collection<Goal.Reward>;
 }
 
-declare class GoalItemDataModel implements GoalItemData extends foundry.abstract.TypeDataModel<GoalItemData> {}
+export declare class GoalItemDataModel implements GoalItemData extends foundry.abstract.TypeDataModel<GoalItemData> {}

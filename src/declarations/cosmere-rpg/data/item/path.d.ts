@@ -1,4 +1,4 @@
-interface PathItemData extends IdItemData, TypedItemData<PathType>, DescriptionItemData, TalentsProviderData {
+export interface PathItemData extends IdItemData, TypedItemData<PathType>, DescriptionItemData, TalentsProviderData {
     /**
      * The non-core skills linked to this path.
      * These skills are displayed with the path in the sheet.
@@ -6,6 +6,6 @@ interface PathItemData extends IdItemData, TypedItemData<PathType>, DescriptionI
     linkedSkills: Skill[];
 }
 
-declare class PathItemDataModel implements PathItemData, foundry.abstract.TypeDataModel<PathItemData> {
+export declare class PathItemDataModel implements PathItemData, foundry.abstract.TypeDataModel<PathItemData> {
     get typeLabel(): string;
 }

@@ -1,3 +1,3 @@
-interface ArmorItemData extends IdItemData, DescriptionItemData, EquippableItemData, ActivatableItemData, ExpertiseItemData, TraitsItemData<ArmorTraitId>, DeflectItemData, PhysicalItemData {
+export interface ArmorItemData extends IdItemData, DescriptionItemData, EquippableItemData, ActivatableItemData, ExpertiseItemData, TraitsItemData<ArmorTraitId>, DeflectItemData, PhysicalItemData {
 }
-declare class ArmorItemDataModel implements ArmorItemData extends foundry.abstract.TypeDataModel<ArmorItemData> {}
+export declare class ArmorItemDataModel implements ArmorItemData extends foundry.abstract.TypeDataModel<ArmorItemData> {}
