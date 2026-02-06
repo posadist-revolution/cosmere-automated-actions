@@ -1,6 +1,7 @@
+import { CosmereItem, CosmereActor } from "@system/documents";
 import { getFirstTarget } from "../../../utils/helpers";
 
-export async function division(item, actor){
+export async function division(item: CosmereItem, actor: CosmereActor){
     const target = getFirstTarget();
     const actorDivisionRank = actor.system.skills.dvs.rank;
     //prompt user for target mode

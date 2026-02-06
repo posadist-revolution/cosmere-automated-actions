@@ -1,6 +1,7 @@
+import { CosmereItem, CosmereActor } from "@system/documents";
 import { getFirstTarget } from "../../../utils/helpers";
 
-export async function injuryRegrowth(item, actor){
+export async function injuryRegrowth(item: CosmereItem, actor: CosmereActor){
     const target = getFirstTarget();
     if(!target){
         ui.notifications.warn("Needs target");

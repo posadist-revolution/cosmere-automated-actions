@@ -1,4 +1,6 @@
-export async function disquiet(item, actor){
+import { CosmereItem, CosmereActor } from "@system/documents";
+
+export async function disquiet(item: CosmereItem, actor: CosmereActor){
     const target = game.user.targets.first();
     let newValue = 0
     const startFocus = target.actor.system.resources.foc.value
@@ -31,7 +33,7 @@ export async function disquiet(item, actor){
             if(newValue < 0){
                 newValue = 0
             }
-            await target.actor.update({"system.resources.foc.value": newValue})                
+            await target.actor.update({"system.resources.foc.value": newValue})
         }
     }]
 })

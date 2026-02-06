@@ -1,6 +1,7 @@
+import { CosmereItem, CosmereActor } from "@system/documents";
 import { getFirstTarget, giveActorItem } from "../../../utils/helpers";
 
-export async function gravitation(item, actor){
+export async function gravitation(item: CosmereItem, actor: CosmereActor){
     const target = getFirstTarget();
     await foundry.applications.api.DialogV2.wait({
         window: { title: "Gravitation" },

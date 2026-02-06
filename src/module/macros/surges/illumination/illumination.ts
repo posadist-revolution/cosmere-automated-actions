@@ -1,6 +1,7 @@
+import { CosmereItem, CosmereActor } from "@system/documents";
 import { giveActorItem } from "../../../utils/helpers";
 
-export async function illumination(item, actor){
+export async function illumination(item: CosmereItem, actor: CosmereActor){
     await foundry.applications.api.DialogV2.wait({
         window: { title: "Illumination" },
         content: "<p>What would you like to lightweave?</p>",
@@ -42,7 +43,7 @@ export function dismissDisguise(item){
     item.delete();
 }
 
-export function complexIllusionRound(item, actor){
+export function complexIllusionRound(item: CosmereItem, actor: CosmereActor){
     //Subtracts 1 investiture from actor every combat round
     const actorInv = actor.system.resources.inv.value;
     if(actorInv < 1){

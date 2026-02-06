@@ -1,6 +1,6 @@
-import { D20Roll } from "@src/declarations/cosmere-rpg/dice";
-import { CosmereActiveEffect } from "@src/declarations/cosmere-rpg/documents";
-import { CosmereActor } from "@src/declarations/cosmere-rpg/documents/actor";
+import { D20Roll } from "@system/dice";
+import { CosmereActiveEffect } from "@system/documents";
+import { CosmereActor } from "@system/documents/actor";
 
 export function applyRollConditions(roll: D20Roll, actor: CosmereActor){
     if(actor.effects.contents.length === 0){
