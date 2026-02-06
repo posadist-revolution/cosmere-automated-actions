@@ -1,12 +1,14 @@
-import { macros, roundIncriment } from "./module/macros/index.js";
-import { getModuleSetting, registerModuleSettings, SETTINGS } from "./module/utils/settings.js";
-import { nameToId } from "./module/utils/helpers.js";
-import { MODULE_ID } from "./module/utils/constants.js";
-import { applyRollConditions, decrementExhausted } from "./module/automations/conditions.js";
+// System Imports
 import { HOOKS } from "@system/constants/hooks.js";
-import { CosmereItem } from "@system/documents/item.js";
-import { COSMERE_AUTOMATED_ACTIONS } from "./module/config.js";
-import { CosmereActor } from "@system/documents/actor";
+import { CosmereItem, CosmereActor } from "@system/documents";
+import { D20Roll } from "@system/dice";
+
+// Module Imports
+import { macros, roundIncriment } from "@module/macros/index.js";
+import { getModuleSetting, registerModuleSettings, SETTINGS } from "@module/utils/settings.js";
+import { nameToId } from "@module/utils/helpers.js";
+import { applyRollConditions, decrementExhausted } from "@module/automations/conditions.js";
+import { COSMERE_AUTOMATED_ACTIONS } from "@module/config.js";
 
 declare global{
     interface CONFIG {
@@ -45,7 +47,7 @@ Hooks.on(HOOKS.USE_ITEM, (item, _options) => {
 
 //Adds conditions to attack rolls
 //Potentially replace after Roll Refactor
-Hooks.on(HOOKS.ATTACK_ROLL, (roll: Roll, item: CosmereItem, _options: unknown) => {
+Hooks.on(HOOKS.ATTACK_ROLL, (roll: D20Roll, item: CosmereItem, _options: unknown) => {
 	if(!getModuleSetting(SETTINGS.AUTOMATE_CONDITIONS)){
 		return;
 	};
@@ -56,7 +58,7 @@ Hooks.on(HOOKS.ATTACK_ROLL, (roll: Roll, item: CosmereItem, _options: unknown) =
 
 //Adds conditions to skill rolls
 //Potentially replace after Roll Refactor
-Hooks.on(HOOKS.SKILL_ROLL, (roll: Roll, actor: CosmereActor, _options: unknown) => {
+Hooks.on(HOOKS.SKILL_ROLL, (roll: D20Roll, actor: CosmereActor, _options: unknown) => {
 	if(!getModuleSetting(SETTINGS.AUTOMATE_CONDITIONS)){
 		return;
 	};

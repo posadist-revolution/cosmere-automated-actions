@@ -1,12 +1,12 @@
+import { D20Roll } from "@src/declarations/cosmere-rpg/dice";
+import { CosmereActiveEffect } from "@src/declarations/cosmere-rpg/documents";
+import { CosmereActor } from "@src/declarations/cosmere-rpg/documents/actor";
 
-
-export function applyRollConditions(roll: Roll, actor: CosmereActor){
+export function applyRollConditions(roll: D20Roll, actor: CosmereActor){
     if(actor.effects.contents.length === 0){
         console.log("CAA | No effects found");
         return;
     };
-    let baseDie = roll.parts.substring(0, roll.parts.indexOf(' '));
-    let modifiers = roll.parts.substring(roll.parts.indexOf(' ') + 1);
     //checks each effect of actor against list of conditions
     actor.effects.forEach(effect => {
         switch(effect.id){
@@ -14,8 +14,7 @@ export function applyRollConditions(roll: Roll, actor: CosmereActor){
                 //THIS WILL NEED TO BE UPDATED AFTER UPCOMING ROLL REFACTOR
                 //Applies exhausted modifier equal to each roll
                 const newOperator = new foundry.dice.terms.OperatorTerm({operator: "-"});
-                const newTerm = new foundry.dice.terms.NumericTerm({number: effect.system.stacks});
-                modifiers = modifiers + " - " + effect.system.stacks;
+                const newTerm = new foundry.dice.terms.NumericTerm({number: effect.system.stacks as number});
                 roll.terms.push(newOperator, newTerm);
             break
             case"condafflicted000":
@@ -62,17 +61,21 @@ export function applyRollConditions(roll: Roll, actor: CosmereActor){
             break
         }
     });
-    roll.parts = baseDie + " " + modifiers;
     roll.resetFormula();
 }
 
-export async function decrementExhausted(actor){
-    const effect = actor.effects.get("condexhausted000");
-    const currentStacks = effect.stacks;
+export async function decrementExhausted(actor: CosmereActor){
+    const effect = actor.effects.get("condexhausted000")!;
     const newStacks = effect.stacks - 1;
         if (newStacks > 0) {
             // Update the effect
-            await effect.update({ 'system.stacks': newStacks });
+            let updateData = {
+                system: {
+                    stacks: newStacks
+                }
+            }
+            await effect.update(updateData as unknown as ActiveEffect.UpdateData);
+            // await effect.update({ 'system.stacks': newStacks });
         } else {
             await actor.toggleStatusEffect("exhausted");
         }
