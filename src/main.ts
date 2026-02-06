@@ -8,7 +8,7 @@ import { macros, roundIncriment } from "@module/macros/index.js";
 import { getModuleSetting, registerModuleSettings, SETTINGS } from "@module/utils/settings.js";
 import { nameToId } from "@module/utils/helpers.js";
 import { applyRollConditions, decrementExhausted } from "@module/automations/conditions.js";
-import { COSMERE_AUTOMATED_ACTIONS } from "@module/config.js";
+import { COSMERE_AUTOMATED_ACTIONS } from "@module/config";
 
 declare global{
     interface CONFIG {

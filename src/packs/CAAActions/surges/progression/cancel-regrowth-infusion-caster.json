@@ -1,6 +1,6 @@
 {
     "type": "power",
-    "name": "Cancel Character Regrowth",
+    "name": "Cancel Regrowth Infusion",
     "img": "icons/magic/life/cross-beam-green.webp",
     "system": {
         "type": "surge",

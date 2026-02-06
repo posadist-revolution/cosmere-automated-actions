@@ -1,6 +1,6 @@
-import { CosmereItem } from "@src/declarations/cosmere-rpg/documents/item";
-import { MODULE_ID } from "./constants";
-import { CosmereActor } from "@src/declarations/cosmere-rpg/documents/actor";
+import { CosmereItem } from "@system/documents/item";
+import { MODULE_ID } from "@module/constants";
+import { CosmereActor } from "@system/documents/actor";
 
 //Module Functions
 export function IsModuleActive(moduleId: string) {
@@ -12,10 +12,10 @@ export function nameToId(str: string) {
 }
 
 //Actor Functions
-export function getFirstTarget(){
+export function getFirstTarget(): foundry.canvas.placeables.Token | undefined{
     return game.user?.targets.first();
 }
-export function getAllTargets(){
+export function getAllTargets(): foundry.canvas.placeables.tokens.UserTargets | undefined {
     return game.user?.targets
 }
 
@@ -24,20 +24,23 @@ export async function activateAllItemEffects(item: CosmereItem){
     const updates = item.effects.map(effect => ({ _id: effect.id, disabled: !effect.disabled }));
     await item.updateEmbeddedDocuments("ActiveEffect", updates);
 }
-export async function giveActorItem(actor: CosmereActor, itemUUID: string){
+export async function giveActorItem(actor: CosmereActor, itemUUID: string): Promise<CosmereItem | undefined>{
     const itemDocument = fromUuidSync(itemUUID);
-    if (!(itemDocument instanceof Item)) {
-        throw new Error(`UUID ${itemUUID} does not reference a valid Item`);
+    if (!(itemDocument instanceof CosmereItem)) {
+        throw new Error(`UUID ${itemUUID} does not reference a valid CosmereItem`);
     }
-    const item = await Item.create((itemDocument.toObject()), { parent: actor as CosmereActor });
-    return item;
+    const item = await CosmereItem.create((itemDocument.toObject()), { parent: actor });
+    if(item){
+        return item;
+    }
+    return undefined;
 }
 export function getFlags(item: CosmereItem){
     const cosmereFlags = item.flags[MODULE_ID];
-    const worldFlags = item.flags["world"];
-    if(cosmereFlags){
+    // const worldFlags = item.flags["world"];
+    // if(cosmereFlags){
         return cosmereFlags;
-    } else {
-        return worldFlags;
-    }
+    // } else {
+    //     return worldFlags;
+    // }
 }

@@ -1,6 +1,15 @@
+import { CosmereActor, CosmereItem } from "@system/documents";
 import { getFirstTarget, getFlags, giveActorItem } from "../../../utils/helpers";
+import { MODULE_ID } from "@src/module/constants";
 
-export async function progression(item, actor){
+interface SizeInterface {
+    width: number,
+    height: number,
+    "texture.scaleX": number,
+    "texture.scaleY": number
+}
+
+export async function progression(item: CosmereItem, actor: CosmereActor){
     const target = getFirstTarget();
     const actorProgressionRank = actor.system.skills.prg.rank;
     await foundry.applications.api.DialogV2.wait({
@@ -11,7 +20,7 @@ export async function progression(item, actor){
             label: "Plant Growth",
             action: "plant growth",
             callback: async () => {
-                const sizes = {
+                const sizes: Record<string, SizeInterface> = {
                     small: { width: 1, height: 1, "texture.scaleX": 0.75, "texture.scaleY": 0.75 },
                     medium: { width: 1, height: 1, "texture.scaleX": 1, "texture.scaleY": 1 },
                     large: { width: 2, height: 2, "texture.scaleX": 1, "texture.scaleY": 1 },
@@ -55,7 +64,7 @@ export async function progression(item, actor){
                     buttons: plantGrowthButtons
                 })
                 // Changes size of targeted token to the output of plantGrowthDialog
-                if(target){
+                if(target && plantGrowthDialog){
                     await target.document.update(sizes[plantGrowthDialog]);
                 };
             }
@@ -66,54 +75,77 @@ export async function progression(item, actor){
             callback: async () => {
                 const caster = actor
                 if(!target){
-                    ui.notifications.warn("Needs target");
+                    ui.notifications?.warn("Needs target");
                     return;
                 }
                 //Adds "Cancel Regrowth Infusion" item to target
-                const cancelRegrowthInfusionUUID = "Compendium.cosmere-automated-actions.caaactions.Item.5SzzMlt3QUMTwXoF";
-                const cancelRegrowthInfusion = await giveActorItem(actor, cancelRegrowthInfusionUUID);
-                cancelRegrowthInfusion.setFlag("cosmere-automated-actions", "target", target.actor.uuid);
-                cancelRegrowthInfusion.setFlag("cosmere-automated-actions", "caster", caster.uuid);
+                const cancelRegrowthTargetUUID = "Compendium.cosmere-automated-actions.caaactions.Item.5SzzMlt3QUMTwXoF";
+                const cancelRegrowthTarget = (await giveActorItem(actor, cancelRegrowthTargetUUID))!;
+                if(cancelRegrowthTarget){
+                    cancelRegrowthTarget.setFlag(MODULE_ID, "target", target.actor?.uuid!);
+                    cancelRegrowthTarget.setFlag(MODULE_ID, "caster", caster.uuid);
+
+                }
                 //Adds "Cancel Regrowth" item to caster
-                const cancelCharacterRegrowthUUID = "Compendium.cosmere-automated-actions.caaactions.Item.LNAzM5dFOJ4fqqdL";
-                const cancelCharacterRegrowth = await giveActorItem(target.actor, cancelCharacterRegrowthUUID)
-                cancelCharacterRegrowth.setFlag("cosmere-automated-actions", "target", target.actor.uuid);
-                cancelCharacterRegrowth.setFlag("cosmere-automated-actions", "caster", caster.uuid);
+                const cancelRegrowthCasterUUID = "Compendium.cosmere-automated-actions.caaactions.Item.LNAzM5dFOJ4fqqdL";
+                const cancelRegrowthCaster = await giveActorItem(target.actor!, cancelRegrowthCasterUUID)
+                if(cancelRegrowthCaster) {
+                    cancelRegrowthCaster.setFlag(MODULE_ID, "target", target.actor?.uuid!);
+                    cancelRegrowthCaster.setFlag(MODULE_ID, "caster", caster.uuid);
+
+                }
             }
         }]
     })
 };
 
-export async function cancelCharacterRegrowth(item, actor){
+export async function cancelCharacterRegrowth(item: CosmereItem, actor: CosmereActor){
     //grabs target and caster from item flags
     const flags = getFlags(item);
+    if(!flags){
+        // TODO: We failed to get the flags on this item
+        return;
+    }
     const targetUUID = flags.target;
     const casterUUID = flags.caster;
-    const targetActor = await fromUuid(targetUUID);
-    const casterActor = await fromUuid(casterUUID);
+    const targetActor = await fromUuid(targetUUID) as CosmereActor;
+    const casterActor = await fromUuid(casterUUID) as CosmereActor;
+    if((!targetActor) || (!casterActor)){
+        // TODO: We couldn't handle resolving the target or caster UUID
+        return;
+    }
+
     //finds items from target and caster and deletes it
-    const targetItem = await targetActor.items.getName("Cancel Character Regrowth");
-    const casterItem = await casterActor.items.getName("Cancel Regrowth Infusion");
+    const targetItem = (await targetActor.items.getName("Cancel Character Regrowth")) as CosmereItem;
+    const casterItem = (await casterActor.items.getName("Cancel Regrowth Infusion")) as CosmereItem;
     targetItem.delete();
     casterItem.delete();
 }
 
-export async function characterRegrowthRound(item){
+export async function characterRegrowthRound(item: CosmereItem){
     //grabs target and caster from item flags
     const flags = getFlags(item);
+    if(!flags){
+        // TODO: We failed to get the flags on this item
+        return;
+    }
     const targetUUID = flags.target;
     const casterUUID = flags.caster;
-    const targetActor = await fromUuid(targetUUID);
-    const casterActor = await fromUuid(casterUUID);
+    const targetActor = await fromUuid(targetUUID) as CosmereActor;
+    const casterActor = await fromUuid(casterUUID) as CosmereActor;
+    if((!targetActor) || (!casterActor)){
+        // TODO: We couldn't handle resolving the target or caster UUID
+        return;
+    }
 
     //drain stormlight from caster, ends effect if there isn't enough stormlight left
     const casterInv = casterActor.system.resources.inv.value;
     if(casterInv < 1){
-        cancelCharacterRegrowth(item, target);
+        cancelCharacterRegrowth(item, targetActor);
         return
     }
     const newInv = casterInv - 1;
-    casterActor.update({ 'system.resources.inv.value': newInv });
+    await casterActor.update({ 'system.resources.inv.value': newInv } as any);
 
     //heals target
     const rollData = casterActor.getRollData();
@@ -124,5 +156,5 @@ export async function characterRegrowthRound(item){
     })
     const targetHealth = targetActor.system.resources.hea.value;
     const newHealth = targetHealth + r.total;
-    targetActor.update({ 'system.resources.hea.value': newHealth });
+    await targetActor.update({ 'system.resources.hea.value': newHealth } as any);
 }

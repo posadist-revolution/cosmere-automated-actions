@@ -1,4 +1,4 @@
-import { ActionCostType } from "../types/cosmere";
+import { ActionCostType } from "@system/types/cosmere";
 import {
     WeaponItemData, WeaponItemDataModel,
     ArmorItemData, ArmorItemDataModel,
@@ -14,7 +14,11 @@ import {
     ConnectionItemData, ConnectionItemDataModel,
     GoalItemData, GoalItemDataModel,
     PowerItemData, PowerItemDataModel,
-    TalentTreeItemData, TalentTreeItemDataModel } from "@system/data/item"
+    TalentTreeItemData, TalentTreeItemDataModel } from "@system/data/item";
+import { SYSTEM_ID } from '@system/constants';
+// Module Imports
+import { MODULE_ID } from '@module/constants';
+import { MODULE_ITEM_FLAGS } from "@module/config/item";
 
 interface ShowConsumeDialogOptions {
     /**
@@ -331,6 +335,7 @@ declare module '@league-of-foundry-developers/foundry-vtt-types/configuration' {
                 previousLevel?: number;
                 isStartingPath?: boolean;
             };
+            [MODULE_ID]: MODULE_ITEM_FLAGS;
         };
     }
 }
