@@ -1,6 +1,5 @@
-import { CosmereItem } from "@system/documents/item";
+import { CosmereItem, CosmereActor, CosmereActiveEffect } from "@system/documents";
 import { MODULE_ID } from "@module/constants";
-import { CosmereActor } from "@system/documents/actor";
 
 //Module Functions
 export function IsModuleActive(moduleId: string) {
@@ -21,15 +20,16 @@ export function getAllTargets(): foundry.canvas.placeables.tokens.UserTargets | 
 
 //Item Functions
 export async function activateAllItemEffects(item: CosmereItem){
-    const updates = item.effects.map(effect => ({ _id: effect.id, disabled: !effect.disabled }));
+    const updates = item.effects.map((effect: CosmereActiveEffect) => ({ _id: effect.id, disabled: !effect.disabled }));
     await item.updateEmbeddedDocuments("ActiveEffect", updates);
 }
 export async function giveActorItem(actor: CosmereActor, itemUUID: string): Promise<CosmereItem | undefined>{
+    const cosmereItemClass = getDocumentClass('Item') as unknown as typeof CosmereItem;
     const itemDocument = fromUuidSync(itemUUID);
-    if (!(itemDocument instanceof CosmereItem)) {
+    if (!(itemDocument instanceof cosmereItemClass)) {
         throw new Error(`UUID ${itemUUID} does not reference a valid CosmereItem`);
     }
-    const item = await CosmereItem.create((itemDocument.toObject()), { parent: actor });
+    const item = await cosmereItemClass.create((itemDocument.toObject()), { parent: actor }) as CosmereItem | undefined;
     if(item){
         return item;
     }
