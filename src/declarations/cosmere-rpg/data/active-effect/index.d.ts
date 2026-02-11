@@ -5,6 +5,8 @@ export declare const config: {
 export { ActiveEffectDataModel } from './active-effect';
 declare module "@league-of-foundry-developers/foundry-vtt-types/configuration" {
     interface DataModelConfig {
-        ActiveEffect: typeof config;
+        ActiveEffect: {
+            base: typeof ActiveEffectDataModel
+        }
     }
 }
