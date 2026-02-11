@@ -36,10 +36,10 @@ export async function illumination(item: CosmereItem, actor: CosmereActor){
 
 }
 
-export function dismissComplexIllusion(item){
+export function dismissComplexIllusion(item: CosmereItem){
     item.delete();
 }
-export function dismissDisguise(item){
+export function dismissDisguise(item: CosmereItem){
     item.delete();
 }
 
@@ -51,5 +51,5 @@ export function complexIllusionRound(item: CosmereItem, actor: CosmereActor){
         return;
     }
     const newInv = actorInv - 1;
-    actor.update({ 'system.resources.inv.value': newInv });
+    actor.update({ 'system.resources.inv.value': newInv } as any);
 }

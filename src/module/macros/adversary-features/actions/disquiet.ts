@@ -1,9 +1,9 @@
 import { CosmereItem, CosmereActor } from "@system/documents";
 
 export async function disquiet(item: CosmereItem, actor: CosmereActor){
-    const target = game.user.targets.first();
+    const target = game.user?.targets.first();
     let newValue = 0
-    const startFocus = target.actor.system.resources.foc.value
+    const startFocus = target?.actor?.system.resources.foc.value!
     let dialogWindow = await foundry.applications.api.DialogV2.wait({
     window: { title: "Disquiet" },
     content: "<p>Do you know one of the target's goal?</p>",
@@ -15,13 +15,13 @@ export async function disquiet(item: CosmereItem, actor: CosmereActor){
             let r = await new Roll("1d4").evaluate()
             await r.toMessage({
                 speaker: ChatMessage.getSpeaker({ actor: actor }),
-                flavor: `${target.actor.name} loses focus`,
+                flavor: `${target?.actor?.name} loses focus`,
             })
             newValue = startFocus - r.total
             if(newValue < 0){
                 newValue = 0
             }
-            await target.actor.update({"system.resources.foc.value": newValue})
+            await target?.actor?.update({"system.resources.foc.value": newValue} as any)
         }
     },
     {
@@ -33,7 +33,7 @@ export async function disquiet(item: CosmereItem, actor: CosmereActor){
             if(newValue < 0){
                 newValue = 0
             }
-            await target.actor.update({"system.resources.foc.value": newValue})
+            await target?.actor?.update({"system.resources.foc.value": newValue} as any)
         }
     }]
 })
