@@ -33,6 +33,7 @@ export declare const config: {
 };
 export {WeaponItemData, WeaponItemDataModel} from './weapon';
 export * from './armor';
+export * from './common';
 export * from './equipment';
 export * from './loot';
 export * from './ancestry';

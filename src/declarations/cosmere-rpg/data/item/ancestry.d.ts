@@ -28,7 +28,7 @@ export interface AncestryItemData extends IdItemData, DescriptionItemData, Talen
         bonusTalents: BonusTalentsRule[];
     };
 }
-export declare class AncestryItemDataModel implements AncestryItemData extends foundry.abstract.TypeDataModel<AncestryItemData> {
+export declare class AncestryItemDataModel implements AncestryItemData, foundry.abstract.TypeDataModel<AncestryItemData> {
     get typeFieldId(): foundry.data.fields.StringField;
     get sizeField(): foundry.data.fields.StringField;
     get extraTalents(): TalentGrant[];

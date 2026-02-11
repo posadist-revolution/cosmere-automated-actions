@@ -5,4 +5,4 @@ export interface LootItemData extends DescriptionItemData, PhysicalItemData {
      */
     isMoney: boolean;
 }
-export declare class LootItemDataModel implements LootItemData extends foundry.abstract.TypeDataModel<LootItemData> {}
+export declare class LootItemDataModel implements LootItemData, foundry.abstract.TypeDataModel<LootItemData> {}

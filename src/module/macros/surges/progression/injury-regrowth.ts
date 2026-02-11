@@ -1,15 +1,17 @@
-import { CosmereItem, CosmereActor } from "@system/documents";
+import type { CosmereActor, CosmereItem } from "@system/documents";
 import { getFirstTarget } from "../../../utils/helpers";
 
 export async function injuryRegrowth(item: CosmereItem, actor: CosmereActor){
     const target = getFirstTarget();
     if(!target){
-        ui.notifications.warn("Needs target");
+        ui.notifications?.warn("Needs target");
         return;
     }
     //Creates a list of buttons for each injury on a target
-    const injuries = target.actor.items.filter(item => item.type === "injury");
-    const injuryRegrowthButtons = [];
+    let targetActor: CosmereActor = target.actor!;
+    const injuries = targetActor.items.filter(item => item.type === "injury");
+    const injuryRegrowthButtons: any[] = [];
+
     injuries.forEach(injury => {
         const injuryItem = injury;
         if(injury.system.type === "permanent_injury"){
@@ -23,12 +25,12 @@ export async function injuryRegrowth(item: CosmereItem, actor: CosmereActor){
                     //If actor can't afford to heal a permanent injury, refund spent investiture and send error
                     if(actorInv < 1){
                         const newValue = actorInv + 2;
-                        ui.notifications.warn("Not enough Investiture to heal a Permanant Injury");
-                        await actor.update({ 'system.resources.inv.value': newValue });
+                        ui.notifications?.warn("Not enough Investiture to heal a Permanant Injury");
+                        await actor.update({ 'system.resources.inv.value': newValue } as unknown as Actor.UpdateData);
                         return;
                     }
                     const newValue = actorInv - 1;
-                    await actor.update({ 'system.resources.inv.value': newValue });
+                    await actor.update({ 'system.resources.inv.value': newValue } as unknown as Actor.UpdateData);
                     injuryItem.delete();
                 }
             })
@@ -48,7 +50,7 @@ export async function injuryRegrowth(item: CosmereItem, actor: CosmereActor){
     });
     //If target has no injuries, cancel
     if(injuryRegrowthButtons.length === 0){
-        ui.notifications.warn("No possible injuries to heal");
+        ui.notifications?.warn("No possible injuries to heal");
         return
     }
     await foundry.applications.api.DialogV2.wait({

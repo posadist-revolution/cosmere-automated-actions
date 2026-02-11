@@ -5,5 +5,5 @@ export declare interface ActionItemData extends DescriptionItemData, Activatable
     ancestry?: string;
 }
 
-export declare class ActionItemDataModel implements ActionItemData extends foundry.abstract.TypeDataModel<ActionItemData>{
+export declare class ActionItemDataModel implements ActionItemData, foundry.abstract.TypeDataModel<ActionItemData>{
 }

@@ -12,6 +12,7 @@ import { COSMERE_AUTOMATED_ACTIONS } from "@module/config";
 
 declare global{
     interface CONFIG {
+        COSMERE: any;
         COSMERE_AUTOMATED_ACTIONS: typeof COSMERE_AUTOMATED_ACTIONS;
     }
 

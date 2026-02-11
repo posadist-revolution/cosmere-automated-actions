@@ -1,5 +1,6 @@
 import { ActionCostType } from "@system/types/cosmere";
 import {
+    CommonItemData,
     WeaponItemData, WeaponItemDataModel,
     ArmorItemData, ArmorItemDataModel,
     EquipmentItemData, EquipmentItemDataModel,
@@ -36,44 +37,7 @@ interface ShowConsumeDialogOptions {
 }
 
 declare class CosmereItem<
-    SystemType = {
-        id: string,
-        type: string,
-        description: {
-            value: string,
-            chat: string,
-            short: string,
-        },
-        activation: {
-            type: string,
-            cost: {
-                value: number,
-                type: ActionCostType
-            },
-            consume: [
-                {
-                    type: any,
-                    value: {
-                        min: number,
-                        max: number,
-                        actual: number
-                    },
-                    resource: any
-                }
-            ],
-            flavor: string,
-            plotDie: boolean,
-            opportunity: any,
-            complication: any,
-            uses: any,
-            attribute: any
-        },
-        damage: any,
-        modality: any,
-        ancestry: any,
-        events: any,
-        relationships: any
-    }
+    SystemType extends CommonItemData = CommonItemData
 > extends Item {
     name: string;
     type: ItemType;

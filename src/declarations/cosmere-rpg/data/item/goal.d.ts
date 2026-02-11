@@ -9,4 +9,4 @@ export interface GoalItemData extends IdItemData, DescriptionItemData {
     rewards: Collection<Goal.Reward>;
 }
 
-export declare class GoalItemDataModel implements GoalItemData extends foundry.abstract.TypeDataModel<GoalItemData> {}
+export declare class GoalItemDataModel implements GoalItemData, foundry.abstract.TypeDataModel<GoalItemData> {}
