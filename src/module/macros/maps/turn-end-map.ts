@@ -51,7 +51,7 @@ export const endTurnItemMap: Map<string, Function> = new Map<string, Function>([
 	//Basic Macros
 ]);
 
-export const endTurnEffectMap: Map<string, Function> = new Map<string, Function>([
+export var endTurnEffectMap: Map<string, Function> = new Map<string, Function>([
 	//Common stormlight actions
 
 	//Abrasion actions
@@ -73,7 +73,6 @@ export const endTurnEffectMap: Map<string, Function> = new Map<string, Function>
 
 
 	//Progression actions
-    ["regrowth-on-turn", characterRegrowthEndTurn]
 
 	//Tension actions
 

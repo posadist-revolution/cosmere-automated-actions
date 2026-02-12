@@ -1,7 +1,8 @@
 import { CosmereActiveEffect, CosmereActor, CosmereItem } from "@system/documents";
-import { getFirstTarget, getFlags, giveActorItem } from "../../../utils/helpers";
+import { getFirstTarget, giveActorItem } from "../../../utils/helpers";
 import { MODULE_ID } from "@src/module/constants";
 import { sizes } from "../helpers/surge-helpers";
+import { startTurnEffectMap, endTurnEffectMap } from "@src/module/macros/maps";
 
 
 export async function progression(item: CosmereItem, actor: CosmereActor){
@@ -23,54 +24,23 @@ export async function progression(item: CosmereItem, actor: CosmereActor){
 };
 
 export async function cancelCharacterRegrowth(item: CosmereItem, actor: CosmereActor){
-    //grabs target and caster from item flags
-    const flags = getFlags(item);
-    if(!flags){
-        // TODO: We failed to get the flags on this item
-        return;
-    }
-    const targetUUID = flags.target;
-    const casterUUID = flags.caster;
-    const targetActor = await fromUuid(targetUUID) as CosmereActor;
-    const casterActor = await fromUuid(casterUUID) as CosmereActor;
-    if((!targetActor) || (!casterActor)){
-        // TODO: We couldn't handle resolving the target or caster UUID
-        return;
-    }
-
     //finds items from target and caster and deletes it
-    const targetItem = (await targetActor.items.getName("Cancel Regrowth Infusion")) as CosmereItem;
-    const targetInfusionItem = (await targetActor.items.getName("Regrowth Infusion")) as CosmereItem;
-    const casterItem = (await casterActor.items.getName("Cancel Regrowth Infusion")) as CosmereItem;
-    targetItem.delete();
-    targetInfusionItem.delete();
-    casterItem.delete();
+    for(const effectUuid of item.getFlag(MODULE_ID, "effectsUuids")){
+        const effectToDelete = await fromUuid(effectUuid) as CosmereActiveEffect;
+        effectToDelete.delete();
+    }
+    item.delete();
 }
 
-export async function characterRegrowthStartTurn(item: CosmereItem, turn: Combat.HistoryData){
-    //grabs target and caster from item flags
-    const flags = getFlags(item);
-    if(!flags){
-        // TODO: We failed to get the flags on this item
-        return;
-    }
-    const targetUUID = flags.target;
-    const casterUUID = flags.caster;
-    const targetActor = await fromUuid(targetUUID) as CosmereActor;
-    const casterActor = await fromUuid(casterUUID) as CosmereActor;
+export async function characterRegrowthStartTurn(effect: CosmereActiveEffect, turn: Combat.HistoryData){
+    const casterCancelItemUUID = effect.origin;
+    const targetActor = effect.parent as CosmereActor;
+    const casterCancelItem = await fromUuid(casterCancelItemUUID) as CosmereItem;
+    const casterActor = casterCancelItem.parent as CosmereActor;
     if((!targetActor) || (!casterActor)){
         // TODO: We couldn't handle resolving the target or caster UUID
         return;
     }
-
-    //drain stormlight from caster, ends effect if there isn't enough stormlight left
-    const casterInv = casterActor.system.resources.inv.value;
-    if(casterInv < 1){
-        cancelCharacterRegrowth(item, targetActor);
-        return
-    }
-    const newInv = casterInv - 1;
-    await casterActor.update({ 'system.resources.inv.value': newInv } as any);
 
     //heals target
     const rollData = casterActor.getRollData();
@@ -86,11 +56,14 @@ export async function characterRegrowthStartTurn(item: CosmereItem, turn: Combat
 export async function characterRegrowthEndTurn(effect: CosmereActiveEffect, turn: Combat.HistoryData){
     //TODO: Check if this is a boss turn before decrementing remaining investiture
     let investitureRemaining = effect.getFlag(MODULE_ID, "infusion_inv_remaining");
-    let casterUUID = effect.getFlag(MODULE_ID, "infusion_caster");
-    const casterActor = await fromUuid(casterUUID) as CosmereActor;
+    let casterCancelItemUUID = effect.origin;
+    const casterCancelItem = await fromUuid(casterCancelItemUUID) as CosmereItem;
+    const casterActor = casterCancelItem.parent as CosmereActor;
     let hasExtendedRegrowth = false;
+    console.log("Removing investiture from regrowth infusion");
+    console.log(`Investiture remaining: ${investitureRemaining}`);
     for(const talent of casterActor.talents){
-        if(talent.system.id.contains("extended") && talent.system.id.contains("regrowth")){
+        if(talent.system.id.includes("extended") && talent.system.id.includes("regrowth")){
             hasExtendedRegrowth = true;
         }
     }
@@ -104,11 +77,20 @@ export async function characterRegrowthEndTurn(effect: CosmereActiveEffect, turn
     else{
         newInvRemaining--;
     }
+
     if(newInvRemaining == 0){
-        cancelCharacterRegrowth(effect.parent as CosmereItem, casterActor);
+        const casterCancelItem = await fromUuid(effect.origin) as CosmereItem;
+        cancelCharacterRegrowth(casterCancelItem, casterActor);
     }
     else if(newInvRemaining != investitureRemaining){
-        effect.setFlag(MODULE_ID, "infusion_inv_remaining", newInvRemaining);
+        effect.update({
+            name: `Regrowth Infusion (${newInvRemaining} inv left)`,
+            flags:{
+                [MODULE_ID]:{
+                    infusion_inv_remaining: newInvRemaining
+                }
+            }
+        })
     }
 }
 
@@ -166,39 +148,48 @@ async function applyRegrowthInfusion(item: CosmereItem, actor: CosmereActor){
         return;
     }
     let infusedInvestiture = await getInfusionInvestiture(item, actor);
-    //Adds "Cancel Regrowth Infusion" item to target
-    const cancelRegrowthTargetUUID = "Compendium.cosmere-automated-actions.caaactions.Item.5SzzMlt3QUMTwXoF";
-    const cancelRegrowthTarget = (await giveActorItem(target.actor!, cancelRegrowthTargetUUID))!;
-    if(cancelRegrowthTarget){
-        cancelRegrowthTarget.setFlag(MODULE_ID, "target", target.actor?.uuid!);
-        cancelRegrowthTarget.setFlag(MODULE_ID, "caster", caster.uuid);
-    }
+
     //Adds "Cancel Regrowth" item to caster
     const cancelRegrowthCasterUUID = "Compendium.cosmere-automated-actions.caaactions.Item.LNAzM5dFOJ4fqqdL";
     const cancelRegrowthCaster = await giveActorItem(actor, cancelRegrowthCasterUUID)
     if(cancelRegrowthCaster) {
         cancelRegrowthCaster.setFlag(MODULE_ID, "target", target.actor?.uuid!);
         cancelRegrowthCaster.setFlag(MODULE_ID, "caster", caster.uuid);
-    }
 
-    //Adds "Regrowth Infusion" item to target
-    const regrowthInfusionUUID = "Compendium.cosmere-automated-actions.caaactions.Item.OnyFplC4STyvuGRe";
-    const regrowthInfusion = await giveActorItem(target.actor!, regrowthInfusionUUID);
-    if(regrowthInfusion) {
-        regrowthInfusion.setFlag(MODULE_ID, "target", target.actor?.uuid!);
-        regrowthInfusion.setFlag(MODULE_ID, "caster", caster.uuid);
-        let regrowthEffect = regrowthInfusion.effects.get("l4azK3bv7GZcsZIv") as CosmereActiveEffect;
-
-        regrowthEffect.setFlag(MODULE_ID, "infusion_inv_remaining", infusedInvestiture);
-        regrowthEffect.setFlag(MODULE_ID, "infusion_caster", caster.uuid);
-        let regrowthUpdateData: ActiveEffect.UpdateData = {
-            description: `Regrowth Infusion (${infusedInvestiture} inv left)`,
+        //Adds "Regrowth Infusion" item to target
+        const regrowthInfusionEffectCreateData: ActiveEffect.CreateData = {
+            name:`Regrowth Infusion (${infusedInvestiture} inv left)`,
+            img: "icons/magic/life/cross-beam-green.webp",
+            disabled: false,
             duration: {
                 "rounds": infusedInvestiture,
+                "startTime": null,
+                "seconds": null,
+                "combat": null,
+                "turns": null,
+                "startRound": null,
+                "startTurn": null
+            },
+            type: "base",
+            //@ts-ignore
+            system: {
+                "isStackable": false,
+                "stacks": null
+            },
+            description: "Regrowth Infusion",
+            origin: cancelRegrowthCaster.uuid,
+            sort: 0,
+            flags: {
+                [MODULE_ID]: {
+                    infusion_inv_remaining: infusedInvestiture
+                }
             }
-        }
-        regrowthEffect.update(regrowthUpdateData);
-        regrowthEffect.updateDuration();
+        };
+        const regrowthInfusionEffect = await ActiveEffect.create(regrowthInfusionEffectCreateData, {parent: target.actor});
+        cancelRegrowthCaster.setFlag(MODULE_ID, "effectsUuids", [regrowthInfusionEffect?.uuid!]);
+        startTurnEffectMap.set(regrowthInfusionEffect?.id!, characterRegrowthStartTurn);
+        endTurnEffectMap.set(regrowthInfusionEffect?.id!, characterRegrowthEndTurn);
+        //TODO: Make the system remember these when an effect is active and we reload the window
     }
 }
 

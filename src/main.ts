@@ -82,7 +82,7 @@ Hooks.on(HOOKS.REST, (actor, length) => {
 });
 
 function shouldCheckTurnStart(cosmereCombat: CosmereCombat, prior: Combat.HistoryData, current: Combat.HistoryData){
-    return (getModuleSetting(SETTINGS.USE_AUTOMATIONS) && current.turn && game.user?.isActiveGM)
+    return (getModuleSetting(SETTINGS.USE_AUTOMATIONS) && current.turn != null && game.user?.isActiveGM)
 }
 //Turn start hooks
 Hooks.on('combatTurnChange', (
@@ -114,13 +114,13 @@ Hooks.on('combatTurnChange', (
         const startTurnEffectFunc = startTurnEffectMap.get(effectId);
         if(startTurnEffectFunc){
             console.log(`Calling start turn func for ${effectId}`)
-            startTurnEffectFunc(effectId, combatant.actor);
+            startTurnEffectFunc(effect, combatant.actor);
         };
     });
 });
 
 function shouldCheckTurnEnd(cosmereCombat: CosmereCombat, prior: Combat.HistoryData, current: Combat.HistoryData){
-    return (getModuleSetting(SETTINGS.USE_AUTOMATIONS) && prior.turn && game.user?.isActiveGM)
+    return (getModuleSetting(SETTINGS.USE_AUTOMATIONS) && prior.turn != null && game.user?.isActiveGM)
 }
 //Turn end hooks
 Hooks.on('combatTurnChange', (
@@ -147,13 +147,15 @@ Hooks.on('combatTurnChange', (
 
     //Checking activeEffects
     console.log(`Checking ${combatant.name} for end-turn effects`);
+    console.log(combatant.actor);
     combatant.actor.effects.forEach((effect)=>{
         var effectId = effect.id;
+        console.log(`Effect: ${effect.id}`)
 	    if(!endTurnEffectMap.has(effectId)){effectId = nameToId(effect.name)};
         const endTurnEffectFunc = endTurnEffectMap.get(effectId);
         if(endTurnEffectFunc){
             console.log(`Calling end turn func for ${effectId}`)
-            endTurnEffectFunc(effectId, combatant.actor);
+            endTurnEffectFunc(effect, combatant.actor);
         };
     });
 
