@@ -1,11 +1,12 @@
 {
     "type": "power",
-    "name": "Cancel Regrowth Infusion",
+    "name": "Regrowth Infusion",
     "img": "icons/magic/life/cross-beam-green.webp",
     "system": {
+        "id": "regrowth-on-turn",
         "type": "surge",
         "description": {
-            "value": "<p>Cancels the continous regrowth infusion</p>",
+            "value": "<p>Continuous regrowth infusion</p>",
             "chat": "",
             "short": ""
         },
@@ -63,32 +64,15 @@
                 "isStackable": false,
                 "stacks": null
             },
-            "changes": [
-                {
-                    "key": "system.resources.hea.value",
-                    "mode": 2,
-                    "value": "",
-                    "priority": null
-                }
-            ],
-            "description": "",
+            "changes": [],
+            "description": "Regrowth Infusion",
             "origin": null,
             "tint": "#ffffff",
             "transfer": true,
             "statuses": [],
             "sort": 0,
             "flags": {},
-            "_stats": {
-                "compendiumSource": null,
-                "duplicateSource": null,
-                "coreVersion": "12.343",
-                "systemId": "cosmere-rpg",
-                "systemVersion": "1.0.2",
-                "createdTime": null,
-                "modifiedTime": null,
-                "lastModifiedBy": null
-            },
-            "_key": "!items.effects!5SzzMlt3QUMTwXoF.l4azK3bv7GZcsZIv"
+            "_key": "!items.effects!OnyFplC4STyvuGRe.l4azK3bv7GZcsZIv"
         }
     ],
     "folder": "atcn34pXpBcZhT2o",
@@ -96,7 +80,7 @@
     "ownership": {
         "default": 0
     },
-    "_id": "5SzzMlt3QUMTwXoF",
+    "_id": "OnyFplC4STyvuGRe",
     "sort": 0,
-    "_key": "!items!5SzzMlt3QUMTwXoF"
+    "_key": "!items!OnyFplC4STyvuGRe"
 }
