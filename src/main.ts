@@ -4,11 +4,11 @@ import { CosmereItem, CosmereActor, CosmereCombat } from "@system/documents";
 import { D20Roll } from "@system/dice";
 
 // Module Imports
-import { macrosMap, roundIncrimentMap } from "@module/macros/index.js";
 import { getModuleSetting, registerModuleSettings, SETTINGS } from "@module/utils/settings.js";
 import { nameToId } from "@module/utils/helpers.js";
 import { applyRollConditions, decrementExhausted } from "@module/automations/conditions.js";
 import { COSMERE_AUTOMATED_ACTIONS } from "@module/config";
+import { macrosMap, startTurnItemMap, startTurnEffectMap, endTurnEffectMap, endTurnItemMap } from "./module/macros/maps";
 
 declare global{
     interface CONFIG {
@@ -18,14 +18,20 @@ declare global{
 
     var cosmereAutomatedActions: {
 		macrosMap: typeof macrosMap,
-        roundIncrimentMap: typeof roundIncrimentMap,
+        startTurnItemMap: typeof startTurnItemMap,
+        startTurnEffectMap: typeof startTurnEffectMap,
+        endTurnItemMap: typeof endTurnItemMap,
+        endTurnEffectMap: typeof endTurnEffectMap,
     };
 }
 
 Hooks.once('init', () => {
 	globalThis.cosmereAutomatedActions = {
 		macrosMap,
-        roundIncrimentMap,
+        startTurnItemMap,
+        startTurnEffectMap,
+        endTurnItemMap,
+        endTurnEffectMap
 	}
 
 	registerModuleSettings();
@@ -78,7 +84,7 @@ Hooks.on(HOOKS.REST, (actor, length) => {
 function shouldCheckTurnStart(cosmereCombat: CosmereCombat, prior: Combat.HistoryData, current: Combat.HistoryData){
     return (getModuleSetting(SETTINGS.USE_AUTOMATIONS) && current.turn && game.user?.isActiveGM)
 }
-//Automated items that incriment during combat
+//Turn start hooks
 Hooks.on('combatTurnChange', (
     cosmereCombat,
     prior,
@@ -87,21 +93,76 @@ Hooks.on('combatTurnChange', (
 	if(!shouldCheckTurnStart(cosmereCombat, prior, current)){
 		return;
 	};
-    //loops through combatants checking each item for a round incrimenting item
+    //loops through combatants checking each item for start-turn behavior
     let combatant = cosmereCombat.turns[current.turn!];
-    console.log(`Checking ${combatant.name} for round-incrementing items`);
+    console.log(`Checking ${combatant.name} for start-turn items`);
     combatant.actor.items.forEach((item)=>{
         var itemId = item.system.id;
-	    if(!macrosMap.has(itemId)){itemId = nameToId(item.name)};
-        const roundIncriment = globalThis.cosmereAutomatedActions.roundIncrimentMap.get(itemId);
-        if(roundIncriment){
-            console.log(`Calling round increment for ${itemId}`)
-            roundIncriment(item, combatant.actor);
+	    if(!startTurnItemMap.has(itemId)){itemId = nameToId(item.name)};
+        const startTurnItemFunc = startTurnItemMap.get(itemId);
+        if(startTurnItemFunc){
+            console.log(`Calling start turn func for ${itemId}`)
+            startTurnItemFunc(item, combatant.actor);
+        };
+    });
+
+    //Checking activeEffects
+    console.log(`Checking ${combatant.name} for start-turn effects`);
+    combatant.actor.effects.forEach((effect)=>{
+        var effectId = effect.id;
+	    if(!startTurnEffectMap.has(effectId)){effectId = nameToId(effect.name)};
+        const startTurnEffectFunc = startTurnEffectMap.get(effectId);
+        if(startTurnEffectFunc){
+            console.log(`Calling start turn func for ${effectId}`)
+            startTurnEffectFunc(effectId, combatant.actor);
         };
     });
 });
 
-function shouldCheckRoundStart(cosmereCombat: CosmereCombat, prior: Combat.HistoryData, current: Combat.HistoryData){
+function shouldCheckTurnEnd(cosmereCombat: CosmereCombat, prior: Combat.HistoryData, current: Combat.HistoryData){
+    return (getModuleSetting(SETTINGS.USE_AUTOMATIONS) && prior.turn && game.user?.isActiveGM)
+}
+//Turn end hooks
+Hooks.on('combatTurnChange', (
+    cosmereCombat,
+    prior,
+    current
+) => {
+    if(!shouldCheckTurnEnd(cosmereCombat, prior, current)){
+        return;
+    }
+    //loops through combatants checking each item for end-turn behavior
+    //Checking items
+    let combatant = cosmereCombat.turns[prior.turn!];
+    console.log(`Checking ${combatant.name} for end-turn items`);
+    combatant.actor.items.forEach((item)=>{
+        var itemId = item.system.id;
+	    if(!endTurnItemMap.has(itemId)){itemId = nameToId(item.name)};
+        const endTurnItemFunc = endTurnItemMap.get(itemId);
+        if(endTurnItemFunc){
+            console.log(`Calling end turn func for ${itemId}`)
+            endTurnItemFunc(item, combatant.actor);
+        };
+    });
+
+    //Checking activeEffects
+    console.log(`Checking ${combatant.name} for end-turn effects`);
+    combatant.actor.effects.forEach((effect)=>{
+        var effectId = effect.id;
+	    if(!endTurnEffectMap.has(effectId)){effectId = nameToId(effect.name)};
+        const endTurnEffectFunc = endTurnEffectMap.get(effectId);
+        if(endTurnEffectFunc){
+            console.log(`Calling end turn func for ${effectId}`)
+            endTurnEffectFunc(effectId, combatant.actor);
+        };
+    });
+
+
+});
+
+Hooks.on
+
+function shouldCheckRoundChange(cosmereCombat: CosmereCombat, prior: Combat.HistoryData, current: Combat.HistoryData){
     return (getModuleSetting(SETTINGS.USE_AUTOMATIONS) && game.user?.isActiveGM && prior.round! < current.round!)
 }
 //Round end hooks
@@ -110,9 +171,8 @@ Hooks.on('combatTurnChange', (
     prior,
     current,
 ) => {
-    if(!shouldCheckRoundStart(cosmereCombat, prior, current)){
+    if(!shouldCheckRoundChange(cosmereCombat, prior, current)){
         return;
     }
-    // Remove effects which have expired here
 
 });

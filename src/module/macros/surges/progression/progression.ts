@@ -47,7 +47,7 @@ export async function cancelCharacterRegrowth(item: CosmereItem, actor: CosmereA
     casterItem.delete();
 }
 
-export async function characterRegrowthRound(item: CosmereItem){
+export async function characterRegrowthStartTurn(item: CosmereItem){
     //grabs target and caster from item flags
     const flags = getFlags(item);
     if(!flags){
@@ -81,6 +81,10 @@ export async function characterRegrowthRound(item: CosmereItem){
     const targetHealth = targetActor.system.resources.hea.value;
     const newHealth = targetHealth + r.total;
     await targetActor.update({ 'system.resources.hea.value': newHealth } as any);
+}
+
+export async function characterRegrowthEndTurn(effect: CosmereActiveEffect){
+
 }
 
 async function applyPlantGrowthInfusion(item: CosmereItem, actor: CosmereActor){
@@ -143,7 +147,6 @@ async function applyRegrowthInfusion(item: CosmereItem, actor: CosmereActor){
     if(cancelRegrowthTarget){
         cancelRegrowthTarget.setFlag(MODULE_ID, "target", target.actor?.uuid!);
         cancelRegrowthTarget.setFlag(MODULE_ID, "caster", caster.uuid);
-
     }
     //Adds "Cancel Regrowth" item to caster
     const cancelRegrowthCasterUUID = "Compendium.cosmere-automated-actions.caaactions.Item.LNAzM5dFOJ4fqqdL";
@@ -151,17 +154,20 @@ async function applyRegrowthInfusion(item: CosmereItem, actor: CosmereActor){
     if(cancelRegrowthCaster) {
         cancelRegrowthCaster.setFlag(MODULE_ID, "target", target.actor?.uuid!);
         cancelRegrowthCaster.setFlag(MODULE_ID, "caster", caster.uuid);
-
     }
+
     //Adds "Regrowth Infusion" item to target
     const regrowthInfusionUUID = "Compendium.cosmere-automated-actions.caaactions.Item.OnyFplC4STyvuGRe";
     const regrowthInfusion = await giveActorItem(target.actor!, regrowthInfusionUUID);
     if(regrowthInfusion) {
         regrowthInfusion.setFlag(MODULE_ID, "target", target.actor?.uuid!);
         regrowthInfusion.setFlag(MODULE_ID, "caster", caster.uuid);
-        regrowthInfusion.setFlag(MODULE_ID, "infusion_inv_remaining", infusedInvestiture);
         let regrowthEffect = regrowthInfusion.effects.get("l4azK3bv7GZcsZIv") as CosmereActiveEffect;
+
+        regrowthEffect.setFlag(MODULE_ID, "infusion_inv_remaining", infusedInvestiture);
+        regrowthEffect.setFlag(MODULE_ID, "infusion_caster", caster.uuid);
         let regrowthUpdateData: ActiveEffect.UpdateData = {
+            description: `Regrowth Infusion (${infusedInvestiture} inv left)`,
             duration: {
                 "rounds": infusedInvestiture,
             }

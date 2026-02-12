@@ -1,5 +1,8 @@
 import { CosmereActor } from '@system/documents/actor';
 import { ActiveEffectDataModel } from '@system/data/active-effect';
+// Module Imports
+import { MODULE_ID } from '@module/constants';
+import { MODULE_EFFECT_FLAGS } from "@module/config";
 
 export declare class CosmereActiveEffect<out SubType extends ActiveEffect.SubType = ActiveEffect.SubType> extends ActiveEffect<SubType> {
     system: ActiveEffectDataModel;
@@ -26,5 +29,11 @@ export declare class CosmereActiveEffect<out SubType extends ActiveEffect.SubTyp
 declare module '@league-of-foundry-developers/foundry-vtt-types/configuration' {
     interface ConfiguredActiveEffect<SubType extends ActiveEffect.SubType> {
         document: CosmereActiveEffect<SubType>;
+    }
+
+    interface FlagConfig {
+        ActiveEffect: {
+            [MODULE_ID]: MODULE_EFFECT_FLAGS
+        }
     }
 }
