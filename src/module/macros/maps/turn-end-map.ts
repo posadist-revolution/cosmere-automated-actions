@@ -1,3 +1,5 @@
+import { characterRegrowthEndTurn } from "../surges/progression/progression";
+
 export const endTurnItemMap: Map<string, Function> = new Map<string, Function>([
 	//Common stormlight actions
 
@@ -71,7 +73,7 @@ export const endTurnEffectMap: Map<string, Function> = new Map<string, Function>
 
 
 	//Progression actions
-
+    ["regrowth-on-turn", characterRegrowthEndTurn]
 
 	//Tension actions
 

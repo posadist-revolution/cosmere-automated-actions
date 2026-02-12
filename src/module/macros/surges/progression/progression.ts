@@ -47,7 +47,7 @@ export async function cancelCharacterRegrowth(item: CosmereItem, actor: CosmereA
     casterItem.delete();
 }
 
-export async function characterRegrowthStartTurn(item: CosmereItem){
+export async function characterRegrowthStartTurn(item: CosmereItem, turn: Combat.HistoryData){
     //grabs target and caster from item flags
     const flags = getFlags(item);
     if(!flags){
@@ -83,8 +83,33 @@ export async function characterRegrowthStartTurn(item: CosmereItem){
     await targetActor.update({ 'system.resources.hea.value': newHealth } as any);
 }
 
-export async function characterRegrowthEndTurn(effect: CosmereActiveEffect){
-
+export async function characterRegrowthEndTurn(effect: CosmereActiveEffect, turn: Combat.HistoryData){
+    //TODO: Check if this is a boss turn before decrementing remaining investiture
+    let investitureRemaining = effect.getFlag(MODULE_ID, "infusion_inv_remaining");
+    let casterUUID = effect.getFlag(MODULE_ID, "infusion_caster");
+    const casterActor = await fromUuid(casterUUID) as CosmereActor;
+    let hasExtendedRegrowth = false;
+    for(const talent of casterActor.talents){
+        if(talent.system.id.contains("extended") && talent.system.id.contains("regrowth")){
+            hasExtendedRegrowth = true;
+        }
+    }
+    let newInvRemaining = investitureRemaining;
+    if(hasExtendedRegrowth){
+        let roundsSinceEffectCreated = turn.round! - effect.duration.startRound!;
+        if(roundsSinceEffectCreated % casterActor.system.skills.prg.rank == casterActor.system.skills.prg.rank - 1){
+            newInvRemaining--;
+        }
+    }
+    else{
+        newInvRemaining--;
+    }
+    if(newInvRemaining == 0){
+        cancelCharacterRegrowth(effect.parent as CosmereItem, casterActor);
+    }
+    else if(newInvRemaining != investitureRemaining){
+        effect.setFlag(MODULE_ID, "infusion_inv_remaining", newInvRemaining);
+    }
 }
 
 async function applyPlantGrowthInfusion(item: CosmereItem, actor: CosmereActor){
