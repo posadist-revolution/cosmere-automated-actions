@@ -65,11 +65,11 @@ import { disquiet } from "./adversary-features/actions/disquiet.js"
 //Basic Macros
 
 
-export const macros = {
+export const macrosMap: Map<string, Function> = new Map<string, Function>([
 	//Common stormlight actions
-	"breathe-stormlight": breatheStormlight,
-	"enhance": enhance,
-	"stormlight-reclamation": stormlightReclamation,
+	["breathe-stormlight", breatheStormlight],
+	["enhance", enhance],
+	["stormlight-reclamation", stormlightReclamation],
 
 	//Abrasion actions
 
@@ -81,25 +81,25 @@ export const macros = {
 
 
 	//Division actions
-	division: division,
+	["division", division],
 
 
 	//Graviatation actions
-	gravitation: gravitation,
-	"dismiss-lashing": dismissLashing,
+	["gravitation", gravitation],
+	["dismiss-lashing", dismissLashing],
 
 
 	//Illumination actions
-	illumination: illumination,
-	"dismiss-complex-illusion": dismissComplexIllusion,
-	"dismiss-disguise": dismissDisguise,
+	["illumination", illumination],
+	["dismiss-complex-illusion", dismissComplexIllusion],
+	["dismiss-disguise", dismissDisguise],
 
 	//Progression actions
-	progression: progression,
-	"injury-regrowth": injuryRegrowth,
-	"cancel-character-regrowth": cancelCharacterRegrowth,
-	"cancel-regrowth-infusion": cancelCharacterRegrowth,
-	"from-the-brink": fromTheBrink,
+	["progression", progression],
+	["injury-regrowth", injuryRegrowth],
+	["cancel-character-regrowth", cancelCharacterRegrowth],
+	["cancel-regrowth-infusion", cancelCharacterRegrowth],
+	["from-the-brink", fromTheBrink],
 
 	//Tension actions
 
@@ -123,14 +123,14 @@ export const macros = {
 
 
 	//Adversary unique
-	disquiet: disquiet,
+	["disquiet", disquiet],
 
 	//Basic Macros
-}
+]);
 
-export const roundIncriment = {
+export const roundIncrimentMap: Map<string, Function> = new Map<string, Function>([
 	//Common stormlight actions
-	
+
 
 	//Abrasion actions
 
@@ -142,19 +142,19 @@ export const roundIncriment = {
 
 
 	//Division actions
-	
+
 
 
 	//Graviatation actions
-	"dismiss-lashing": gravitationRound,
+	["dismiss-lashing", gravitationRound],
 
 
 	//Illumination actions
-	"dismiss-complex-illusion": complexIllusionRound,
-	
+	["dismiss-complex-illusion", complexIllusionRound],
+
 
 	//Progression actions
-	"cancel-regrowth-infusion": characterRegrowthRound,
+	["regrowth-infusion", characterRegrowthRound],
 
 	//Tension actions
 
@@ -180,4 +180,4 @@ export const roundIncriment = {
 	//Adversary unique
 
 	//Basic Macros
-}
+]);

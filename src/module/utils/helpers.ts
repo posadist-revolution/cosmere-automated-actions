@@ -24,12 +24,11 @@ export async function activateAllItemEffects(item: CosmereItem){
     await item.updateEmbeddedDocuments("ActiveEffect", updates);
 }
 export async function giveActorItem(actor: CosmereActor, itemUUID: string): Promise<CosmereItem | undefined>{
-    const cosmereItemClass = getDocumentClass('Item') as unknown as typeof CosmereItem;
-    const itemDocument = fromUuidSync(itemUUID);
-    if (!(itemDocument instanceof cosmereItemClass)) {
-        throw new Error(`UUID ${itemUUID} does not reference a valid CosmereItem`);
-    }
-    const item = await cosmereItemClass.create((itemDocument.toObject()), { parent: actor }) as CosmereItem | undefined;
+    // const cosmereItemClass = getDocumentClass('Item') as unknown as typeof CosmereItem;
+    const itemId = await fromUuid(itemUUID);
+    console.log(itemId);
+    // @ts-ignore
+    const item = await Item.create((itemId.toObject()), { parent: actor }) as CosmereItem | undefined;
     if(item){
         return item;
     }

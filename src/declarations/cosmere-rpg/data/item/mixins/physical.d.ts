@@ -1,4 +1,6 @@
-interface PhysicalItemData {
+import { CommonItemData } from "../common";
+
+interface PhysicalItemData extends CommonItemData{
     quantity: number;
     weight: {
         value: number;

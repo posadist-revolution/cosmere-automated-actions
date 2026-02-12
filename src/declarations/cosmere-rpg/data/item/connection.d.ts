@@ -4,4 +4,4 @@
  */
 export interface ConnectionItemData extends DescriptionItemData {}
 
-export declare class ConnectionItemDataModel implements ConnectionItemData extends foundry.abstract.TypeDataModel<ConnectionItemData> {}
+export declare class ConnectionItemDataModel implements ConnectionItemData, foundry.abstract.TypeDataModel<ConnectionItemData> {}

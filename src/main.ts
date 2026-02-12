@@ -1,10 +1,10 @@
 // System Imports
 import { HOOKS } from "@system/constants/hooks.js";
-import { CosmereItem, CosmereActor } from "@system/documents";
+import { CosmereItem, CosmereActor, CosmereCombat } from "@system/documents";
 import { D20Roll } from "@system/dice";
 
 // Module Imports
-import { macros, roundIncriment } from "@module/macros/index.js";
+import { macrosMap, roundIncrimentMap } from "@module/macros/index.js";
 import { getModuleSetting, registerModuleSettings, SETTINGS } from "@module/utils/settings.js";
 import { nameToId } from "@module/utils/helpers.js";
 import { applyRollConditions, decrementExhausted } from "@module/automations/conditions.js";
@@ -16,18 +16,16 @@ declare global{
         COSMERE_AUTOMATED_ACTIONS: typeof COSMERE_AUTOMATED_ACTIONS;
     }
 
-    // NOTE: Must use var to affect globalThis
-    // eslint-disable-next-line no-var
     var cosmereAutomatedActions: {
-		macros: any,
-        roundIncriment: any,
+		macrosMap: typeof macrosMap,
+        roundIncrimentMap: typeof roundIncrimentMap,
     };
 }
 
 Hooks.once('init', () => {
-	cosmereAutomatedActions = {
-		macros,
-        roundIncriment,
+	globalThis.cosmereAutomatedActions = {
+		macrosMap,
+        roundIncrimentMap,
 	}
 
 	registerModuleSettings();
@@ -41,8 +39,8 @@ Hooks.on(HOOKS.USE_ITEM, (item, _options) => {
     //Gets item ID, checks if item has an associated macro, and then calls it
     const actor = item.actor;
     var itemId = item.system.id;
-	if(itemId = "new-action"){itemId = nameToId(item.name)};
-    const macro = cosmereAutomatedActions.macros[itemId];
+	if(!macrosMap.has(itemId)){itemId = nameToId(item.name)};
+    const macro = globalThis.cosmereAutomatedActions.macrosMap.get(itemId);
     if(macro) macro(item,actor);
 })
 
@@ -77,20 +75,44 @@ Hooks.on(HOOKS.REST, (actor, length) => {
 	};
 });
 
+function shouldCheckTurnStart(cosmereCombat: CosmereCombat, prior: Combat.HistoryData, current: Combat.HistoryData){
+    return (getModuleSetting(SETTINGS.USE_AUTOMATIONS) && current.turn && game.user?.isActiveGM)
+}
 //Automated items that incriment during combat
-Hooks.on('combatTurnChange', (cosmereCombat) => {
-	if(!getModuleSetting(SETTINGS.USE_AUTOMATIONS)){
+Hooks.on('combatTurnChange', (
+    cosmereCombat,
+    prior,
+    current
+) => {
+	if(!shouldCheckTurnStart(cosmereCombat, prior, current)){
 		return;
 	};
     //loops through combatants checking each item for a round incrimenting item
-    cosmereCombat.turns.forEach((combatant)=>{
-        combatant.actor.items.forEach((item)=>{
-            var itemId = item.system.id;
-	        if(itemId = "new-action"){itemId = nameToId(item.name)};
-            const roundIncriment = cosmereAutomatedActions.roundIncriment[itemId];
-            if(roundIncriment){
-                roundIncriment(item, combatant.actor);
-            };
-        });
+    let combatant = cosmereCombat.turns[current.turn!];
+    console.log(`Checking ${combatant.name} for round-incrementing items`);
+    combatant.actor.items.forEach((item)=>{
+        var itemId = item.system.id;
+	    if(!macrosMap.has(itemId)){itemId = nameToId(item.name)};
+        const roundIncriment = globalThis.cosmereAutomatedActions.roundIncrimentMap.get(itemId);
+        if(roundIncriment){
+            console.log(`Calling round increment for ${itemId}`)
+            roundIncriment(item, combatant.actor);
+        };
     });
+});
+
+function shouldCheckRoundStart(cosmereCombat: CosmereCombat, prior: Combat.HistoryData, current: Combat.HistoryData){
+    return (getModuleSetting(SETTINGS.USE_AUTOMATIONS) && game.user?.isActiveGM && prior.round! < current.round!)
+}
+//Round end hooks
+Hooks.on('combatTurnChange', (
+    cosmereCombat: CosmereCombat,
+    prior,
+    current,
+) => {
+    if(!shouldCheckRoundStart(cosmereCombat, prior, current)){
+        return;
+    }
+    // Remove effects which have expired here
+
 });
