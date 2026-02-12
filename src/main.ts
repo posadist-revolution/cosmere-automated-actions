@@ -9,6 +9,7 @@ import { nameToId } from "@module/utils/helpers.js";
 import { applyRollConditions, decrementExhausted } from "@module/automations/conditions.js";
 import { COSMERE_AUTOMATED_ACTIONS } from "@module/config";
 import { macrosMap, startTurnItemMap, startTurnEffectMap, endTurnEffectMap, endTurnItemMap } from "./module/macros/maps";
+import { MODULE_ID } from "./module/constants";
 
 declare global{
     interface CONFIG {
@@ -109,7 +110,10 @@ Hooks.on('combatTurnChange', (
     //Checking activeEffects
     console.log(`Checking ${combatant.name} for start-turn effects`);
     combatant.actor.effects.forEach((effect)=>{
-        var effectId = effect.id;
+        if(!effect.flags[MODULE_ID]){
+            return;
+        }
+        var effectId = effect.flags[MODULE_ID]?.start_turn_id!;
 	    if(!startTurnEffectMap.has(effectId)){effectId = nameToId(effect.name)};
         const startTurnEffectFunc = startTurnEffectMap.get(effectId);
         if(startTurnEffectFunc){
@@ -149,7 +153,10 @@ Hooks.on('combatTurnChange', (
     console.log(`Checking ${combatant.name} for end-turn effects`);
     console.log(combatant.actor);
     combatant.actor.effects.forEach((effect)=>{
-        var effectId = effect.id;
+        if(!effect.flags[MODULE_ID]){
+            return;
+        }
+        var effectId = effect.flags[MODULE_ID]?.end_turn_id!;
         console.log(`Effect: ${effect.id}`)
 	    if(!endTurnEffectMap.has(effectId)){effectId = nameToId(effect.name)};
         const endTurnEffectFunc = endTurnEffectMap.get(effectId);

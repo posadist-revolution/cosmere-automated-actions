@@ -73,6 +73,7 @@ export var endTurnEffectMap: Map<string, Function> = new Map<string, Function>([
 
 
 	//Progression actions
+    ["regrowth-infusion", characterRegrowthEndTurn],
 
 	//Tension actions
 

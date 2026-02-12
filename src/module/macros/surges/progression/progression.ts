@@ -181,15 +181,14 @@ async function applyRegrowthInfusion(item: CosmereItem, actor: CosmereActor){
             sort: 0,
             flags: {
                 [MODULE_ID]: {
-                    infusion_inv_remaining: infusedInvestiture
+                    infusion_inv_remaining: infusedInvestiture,
+                    start_turn_id: "regrowth-infusion",
+                    end_turn_id: "regrowth-infusion"
                 }
             }
         };
         const regrowthInfusionEffect = await ActiveEffect.create(regrowthInfusionEffectCreateData, {parent: target.actor});
         cancelRegrowthCaster.setFlag(MODULE_ID, "effectsUuids", [regrowthInfusionEffect?.uuid!]);
-        startTurnEffectMap.set(regrowthInfusionEffect?.id!, characterRegrowthStartTurn);
-        endTurnEffectMap.set(regrowthInfusionEffect?.id!, characterRegrowthEndTurn);
-        //TODO: Make the system remember these when an effect is active and we reload the window
     }
 }
 

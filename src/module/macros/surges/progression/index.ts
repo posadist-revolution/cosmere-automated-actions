@@ -12,7 +12,7 @@ export const progressionDefinition: MacroDefinition = {
         ["cancel-regrowth-infusion", cancelCharacterRegrowth]
     ],
     startTurnEffect: ["regrowth-infusion", characterRegrowthStartTurn],
-    endTurnEffect: ["regrowth-on-turn", characterRegrowthEndTurn],
+    endTurnEffect: ["regrowth-infusion", characterRegrowthEndTurn],
 }
 
 export const injuryRegrowthDefinition: MacroDefinition = {
