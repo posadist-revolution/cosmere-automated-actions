@@ -3,6 +3,7 @@
     "name": "Cancel Regrowth Infusion",
     "img": "icons/magic/life/cross-beam-green.webp",
     "system": {
+        "id": "cancel-regrowth-infusion",
         "type": "surge",
         "description": {
             "value": "<p>Cancels the continous regrowth infusion</p>",

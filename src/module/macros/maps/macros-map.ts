@@ -1,3 +1,5 @@
+//Macro ids
+import { PRG } from "../surges/progression/id.js"
 //Common stormlight actions
 import { breatheStormlight } from "../surges/common/breathe-stormlight.js"
 import { enhance } from "../surges/common/enhance.js"
@@ -84,11 +86,10 @@ export const macrosMap: Map<string, Function> = new Map<string, Function>([
 	["dismiss-disguise", dismissDisguise],
 
 	//Progression actions
-	["progression", progression],
-	["injury-regrowth", injuryRegrowth],
-	["cancel-character-regrowth", cancelCharacterRegrowth],
-	["cancel-regrowth-infusion", cancelCharacterRegrowth],
-	["from-the-brink", fromTheBrink],
+	[PRG.PROGRESSION, progression],
+	[PRG.INJURY_REGROWTH, injuryRegrowth],
+	[PRG.CANCEL_REGROWTH_INFUSION, cancelCharacterRegrowth],
+	[PRG.FROM_THE_BRINK, fromTheBrink],
 
 	//Tension actions
 

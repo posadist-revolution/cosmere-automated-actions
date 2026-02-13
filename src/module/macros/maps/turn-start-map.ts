@@ -17,10 +17,9 @@ import { gravitationRound } from "../surges/gravitation/gravitation.js"
 
 //Illumination actions
 import { complexIllusionRound } from "../surges/illumination/illumination.js"
-import { characterRegrowthStartTurn } from "../surges/progression/progression.js";
 
 //Progression actions
-
+import { characterRegrowthExpendInvestiture, characterRegrowthEffectStartTurn } from "../surges/progression/progression.js";
 
 //Tension actions
 
@@ -75,6 +74,7 @@ export const startTurnItemMap: Map<string, Function> = new Map<string, Function>
 
 
 	//Progression actions
+    ["cancel-regrowth-infusion", characterRegrowthExpendInvestiture],
 
 
 	//Tension actions
@@ -126,7 +126,7 @@ export var startTurnEffectMap: Map<string, Function> = new Map<string, Function>
 
 
 	//Progression actions
-	["regrowth-infusion", characterRegrowthStartTurn],
+	["regrowth-infusion", characterRegrowthEffectStartTurn],
 
 	//Tension actions
 

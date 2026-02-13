@@ -1,5 +1,5 @@
 import { MacroDefinition } from "../..";
-import { progression, characterRegrowthEndTurn, characterRegrowthStartTurn, cancelCharacterRegrowth } from "./progression";
+import { progression, characterRegrowthEffectStartTurn, cancelCharacterRegrowth, characterRegrowthExpendInvestiture } from "./progression";
 
     // ["injury-regrowth", injuryRegrowth],
     // ["cancel-character-regrowth", cancelCharacterRegrowth],
@@ -11,8 +11,8 @@ export const progressionDefinition: MacroDefinition = {
         ["progression", progression],
         ["cancel-regrowth-infusion", cancelCharacterRegrowth]
     ],
-    startTurnEffect: ["regrowth-infusion", characterRegrowthStartTurn],
-    endTurnEffect: ["regrowth-infusion", characterRegrowthEndTurn],
+    startTurnItem: ["cancel-regrowth-infusion", characterRegrowthExpendInvestiture],
+    startTurnEffect: ["regrowth-infusion", characterRegrowthEffectStartTurn],
 }
 
 export const injuryRegrowthDefinition: MacroDefinition = {

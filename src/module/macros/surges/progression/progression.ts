@@ -1,8 +1,8 @@
 import { CosmereActiveEffect, CosmereActor, CosmereItem } from "@system/documents";
 import { getFirstTarget, giveActorItem } from "../../../utils/helpers";
 import { MODULE_ID } from "@src/module/constants";
-import { sizes } from "../helpers/surge-helpers";
-import { startTurnEffectMap, endTurnEffectMap } from "@src/module/macros/maps";
+import { expendInvestiture, getSurgeTalents, sizes, getInfusionInvestiture, useCanceled } from "../helpers/surge-helpers";
+import { PRG } from "./id";
 
 
 export async function progression(item: CosmereItem, actor: CosmereActor){
@@ -32,7 +32,7 @@ export async function cancelCharacterRegrowth(item: CosmereItem, actor: CosmereA
     item.delete();
 }
 
-export async function characterRegrowthStartTurn(effect: CosmereActiveEffect, turn: Combat.HistoryData){
+export async function characterRegrowthEffectStartTurn(effect: CosmereActiveEffect, turn: Combat.HistoryData){
     const casterCancelItemUUID = effect.origin;
     const targetActor = effect.parent as CosmereActor;
     const casterCancelItem = await fromUuid(casterCancelItemUUID) as CosmereItem;
@@ -53,44 +53,49 @@ export async function characterRegrowthStartTurn(effect: CosmereActiveEffect, tu
     await targetActor.update({ 'system.resources.hea.value': newHealth } as any);
 }
 
-export async function characterRegrowthEndTurn(effect: CosmereActiveEffect, turn: Combat.HistoryData){
+export async function characterRegrowthExpendInvestiture(item: CosmereItem, turn: Combat.HistoryData){
     //TODO: Check if this is a boss turn before decrementing remaining investiture
-    let investitureRemaining = effect.getFlag(MODULE_ID, "infusion_inv_remaining");
-    let casterCancelItemUUID = effect.origin;
-    const casterCancelItem = await fromUuid(casterCancelItemUUID) as CosmereItem;
-    const casterActor = casterCancelItem.parent as CosmereActor;
-    let hasExtendedRegrowth = false;
-    console.log("Removing investiture from regrowth infusion");
-    console.log(`Investiture remaining: ${investitureRemaining}`);
-    for(const talent of casterActor.talents){
-        if(talent.system.id.includes("extended") && talent.system.id.includes("regrowth")){
-            hasExtendedRegrowth = true;
-        }
-    }
-    let newInvRemaining = investitureRemaining;
-    if(hasExtendedRegrowth){
-        let roundsSinceEffectCreated = turn.round! - effect.duration.startRound!;
-        if(roundsSinceEffectCreated % casterActor.system.skills.prg.rank == casterActor.system.skills.prg.rank - 1){
-            newInvRemaining--;
-        }
-    }
-    else{
-        newInvRemaining--;
-    }
-
-    if(newInvRemaining == 0){
-        const casterCancelItem = await fromUuid(effect.origin) as CosmereItem;
-        cancelCharacterRegrowth(casterCancelItem, casterActor);
-    }
-    else if(newInvRemaining != investitureRemaining){
-        effect.update({
-            name: `Regrowth Infusion (${newInvRemaining} inv left)`,
-            flags:{
-                [MODULE_ID]:{
-                    infusion_inv_remaining: newInvRemaining
-                }
+    const effectsUUIDs = item.flags[MODULE_ID]?.effectsUuids
+    for(const effectUUID of effectsUUIDs!){
+        let effect = await fromUuid(effectUUID) as CosmereActiveEffect;
+        const casterActor = item.parent as CosmereActor;
+        let hasExtendedRegrowth = false;
+        console.log("Removing investiture from regrowth infusion");
+        let progressionTalents = getSurgeTalents(casterActor, "prg");
+        for(const talent of progressionTalents){
+            if(talent.system.id == "extended-regrowth"){
+                hasExtendedRegrowth = true;
             }
-        })
+        }
+        if(!expendInvestiture(effect, turn.round!, casterActor.system.skills.prg.rank, hasExtendedRegrowth)){
+            cancelCharacterRegrowth(item, casterActor);
+        }
+        // let investitureRemaining = effect.getFlag(MODULE_ID, "infusion_inv_remaining");
+        // console.log(`Investiture remaining: ${investitureRemaining}`);
+        // let newInvRemaining = investitureRemaining;
+        // if(hasExtendedRegrowth){
+        //     let roundsSinceEffectCreated = turn.round! - effect.duration.startRound!;
+        //     if(roundsSinceEffectCreated % casterActor.system.skills.prg.rank == 0 && turn.round! > effect.duration.startRound!){
+        //         newInvRemaining--;
+        //     }
+        // }
+        // else{
+        //     newInvRemaining--;
+        // }
+
+        // if(newInvRemaining == 0){
+        //     cancelCharacterRegrowth(item, casterActor);
+        // }
+        // else if(newInvRemaining != investitureRemaining){
+        //     effect.update({
+        //         name: `Regrowth Infusion (${newInvRemaining} inv left)`,
+        //         flags:{
+        //             [MODULE_ID]:{
+        //                 infusion_inv_remaining: newInvRemaining
+        //             }
+        //         }
+        //     })
+        // }
     }
 }
 
@@ -182,36 +187,11 @@ async function applyRegrowthInfusion(item: CosmereItem, actor: CosmereActor){
             flags: {
                 [MODULE_ID]: {
                     infusion_inv_remaining: infusedInvestiture,
-                    start_turn_id: "regrowth-infusion",
-                    end_turn_id: "regrowth-infusion"
+                    start_turn_id: PRG.REGROWTH_INFUSION,
                 }
             }
         };
         const regrowthInfusionEffect = await ActiveEffect.create(regrowthInfusionEffectCreateData, {parent: target.actor});
         cancelRegrowthCaster.setFlag(MODULE_ID, "effectsUuids", [regrowthInfusionEffect?.uuid!]);
     }
-}
-
-async function useCanceled(item: CosmereItem, actor: CosmereActor){
-    let currentInv = actor.system.resources.inv.value;
-    const newInv = currentInv + 1;
-    actor.update({ 'system.resources.inv.value': newInv } as any);
-}
-
-async function getInfusionInvestiture(item: CosmereItem, actor: CosmereActor){
-    // Available investiture is current + 1
-    let availableInv = actor.system.resources.inv.value + 1;
-    let promptConfig: foundry.applications.api.DialogV2.PromptConfig = {
-        window: { title: "How much inv to infuse?" },
-        content: `<input name="infusion" type="range" min="1" max="${availableInv}" step="1" autofocus>`,
-        ok: {
-            label: "Submit",
-            // @ts-ignore
-            callback: (event, button, dialog) => button.form?.elements.infusion.valueAsNumber
-        }
-    }
-    let infusedInvestiture = await foundry.applications.api.DialogV2.prompt(promptConfig) as number;
-    let newInv = availableInv - infusedInvestiture;
-    actor.update({ 'system.resources.inv.value': newInv } as any);
-    return infusedInvestiture;
 }
