@@ -1,3 +1,4 @@
+import { MODULE_ID } from "@src/module/constants";
 import { CosmereItem, CosmereActor, CosmereActiveEffect } from "@src/declarations/cosmere-rpg/documents";
 
 export const SurgeScalingTable = [
