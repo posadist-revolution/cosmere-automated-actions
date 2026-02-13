@@ -2,7 +2,7 @@ import { CosmereActiveEffect, CosmereActor, CosmereItem } from "@system/document
 import { getFirstTarget, giveActorItem } from "../../../utils/helpers";
 import { MODULE_ID } from "@src/module/constants";
 import { expendInvestiture, getSurgeTalents, sizes, getInfusionInvestiture, useCanceled } from "../helpers/surge-helpers";
-import { PRG } from "./id";
+import { PRG } from "./talent-ids";
 
 
 export async function progression(item: CosmereItem, actor: CosmereActor){
@@ -43,8 +43,23 @@ export async function characterRegrowthEffectStartTurn(effect: CosmereActiveEffe
     }
 
     //heals target
+    let progressionTalents = getSurgeTalents(casterActor, "prg");
+    let swiftRegeneration = false;
+    let reliableProgression = false;
+    let progressionMod = casterActor.system.skills.prg.rank;
+    let rollFormula = "@scalar.power.prg.die";
+    for(const talent of progressionTalents){
+        if(talent.system.id == "reliable-progression"){
+            let progressionRank = casterActor.system.skills.prg.rank;
+            rollFormula = `{@scalar.power.prg.die, ${progressionRank}}kh`;
+        }
+        if(talent.system.id == "swift-regeneration"){
+
+        }
+    }
+
     const rollData = casterActor.getRollData();
-    let r = await new Roll("@scalar.power.prg.die", rollData).evaluate();
+    let r = await new Roll(rollFormula, rollData).evaluate();
     await r.toMessage({
         content: `${casterActor.name} heals ${targetActor.name}`,
     })

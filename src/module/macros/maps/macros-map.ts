@@ -1,5 +1,5 @@
 //Macro ids
-import { PRG } from "../surges/progression/id.js"
+import { PRG } from "../surges/progression/talent-ids.js"
 //Common stormlight actions
 import { breatheStormlight } from "../surges/common/breathe-stormlight.js"
 import { enhance } from "../surges/common/enhance.js"
