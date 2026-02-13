@@ -13,6 +13,7 @@
 
 
 //Graviatation actions
+import { TurnChangeEffectFunc, TurnChangeItemFunc } from "../index.js";
 import { gravitationRound } from "../surges/gravitation/gravitation.js"
 
 //Illumination actions
@@ -48,7 +49,7 @@ import { characterRegrowthExpendInvestiture, characterRegrowthEffectStartTurn } 
 //Basic Macros
 
 
-export const startTurnItemMap: Map<string, Function> = new Map<string, Function>([
+export const startTurnItemMap: Map<string, TurnChangeItemFunc> = new Map<string, TurnChangeItemFunc>([
 	//Common stormlight actions
 
 
@@ -66,15 +67,15 @@ export const startTurnItemMap: Map<string, Function> = new Map<string, Function>
 
 
 	//Graviatation actions
-	["dismiss-lashing", gravitationRound],
+	["dismiss-lashing", gravitationRound as TurnChangeItemFunc],
 
 
 	//Illumination actions
-	["dismiss-complex-illusion", complexIllusionRound],
+	["dismiss-complex-illusion", complexIllusionRound as TurnChangeItemFunc],
 
 
 	//Progression actions
-    ["cancel-regrowth-infusion", characterRegrowthExpendInvestiture],
+    ["cancel-regrowth-infusion", characterRegrowthExpendInvestiture as TurnChangeItemFunc],
 
 
 	//Tension actions
@@ -103,7 +104,7 @@ export const startTurnItemMap: Map<string, Function> = new Map<string, Function>
 	//Basic Macros
 ]);
 
-export var startTurnEffectMap: Map<string, Function> = new Map<string, Function>([
+export var startTurnEffectMap: Map<string, TurnChangeEffectFunc> = new Map<string, TurnChangeEffectFunc>([
 	//Common stormlight actions
 
 

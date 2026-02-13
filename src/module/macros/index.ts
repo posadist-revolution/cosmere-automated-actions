@@ -1,12 +1,17 @@
 import { CosmereActiveEffect, CosmereActor, CosmereItem } from "@src/declarations/cosmere-rpg/documents"
 import { macrosMap,startTurnItemMap, startTurnEffectMap, endTurnItemMap, endTurnEffectMap } from './maps'
 
+export type MacroFunc = ((item: CosmereItem, actor: CosmereActor) => Promise<void>);
+export type TurnChangeItemFunc = ((item: CosmereItem, actor: CosmereActor, turn: Combat.HistoryData) => Promise<void>);
+export type TurnChangeEffectFunc = ((effect: CosmereActiveEffect, turn: Combat.HistoryData) => Promise<void>);
+
+
 export type MacroDefinition = {
-    macros?: [string, (item: CosmereItem, actor: CosmereActor) => Promise<void>][];
-    startTurnItem?: [string, (item: CosmereItem, turn: Combat.HistoryData) => Promise<void>];
-    startTurnEffect?: [string, (effect: CosmereActiveEffect, turn: Combat.HistoryData) => Promise<void>];
-    endTurnItem?: [string, (item: CosmereItem, turn: Combat.HistoryData) => Promise<void>];
-    endTurnEffect?: [string, (effect: CosmereActiveEffect, turn: Combat.HistoryData) => Promise<void>];
+    macros?: [string, MacroFunc][];
+    startTurnItem?: [string, TurnChangeItemFunc];
+    startTurnEffect?: [string, TurnChangeEffectFunc];
+    endTurnItem?: [string, TurnChangeItemFunc];
+    endTurnEffect?: [string, TurnChangeEffectFunc];
 }
 
 export function registerMacroDefinition(def: MacroDefinition){

@@ -53,14 +53,15 @@ import { fromTheBrink } from "../surges/progression/from-the-brink.js"
 
 //Adversary unique
 import { disquiet } from "../adversary-features/actions/disquiet.js"
+import { MacroFunc } from "../index.js"
 
 //Basic Macros
 
-export const macrosMap: Map<string, Function> = new Map<string, Function>([
+export const macrosMap: Map<string, MacroFunc> = new Map<string, MacroFunc>([
 	//Common stormlight actions
-	["breathe-stormlight", breatheStormlight],
-	["enhance", enhance],
-	["stormlight-reclamation", stormlightReclamation],
+	["breathe-stormlight", breatheStormlight as MacroFunc],
+	["enhance", enhance as MacroFunc],
+	["stormlight-reclamation", stormlightReclamation as MacroFunc],
 
 	//Abrasion actions
 
@@ -72,24 +73,24 @@ export const macrosMap: Map<string, Function> = new Map<string, Function>([
 
 
 	//Division actions
-	["division", division],
+	["division", division as MacroFunc],
 
 
 	//Graviatation actions
-	["gravitation", gravitation],
-	["dismiss-lashing", dismissLashing],
+	["gravitation", gravitation as MacroFunc],
+	["dismiss-lashing", dismissLashing as MacroFunc],
 
 
 	//Illumination actions
-	["illumination", illumination],
-	["dismiss-complex-illusion", dismissComplexIllusion],
-	["dismiss-disguise", dismissDisguise],
+	["illumination", illumination as MacroFunc],
+	["dismiss-complex-illusion", dismissComplexIllusion as MacroFunc],
+	["dismiss-disguise", dismissDisguise as MacroFunc],
 
 	//Progression actions
-	[PRG.PROGRESSION, progression],
-	[PRG.INJURY_REGROWTH, injuryRegrowth],
-	[PRG.CANCEL_REGROWTH_INFUSION, cancelCharacterRegrowth],
-	[PRG.FROM_THE_BRINK, fromTheBrink],
+	[PRG.PROGRESSION, progression as MacroFunc],
+	[PRG.INJURY_REGROWTH, injuryRegrowth as MacroFunc],
+	[PRG.CANCEL_REGROWTH_INFUSION, cancelCharacterRegrowth as MacroFunc],
+	[PRG.FROM_THE_BRINK, fromTheBrink as MacroFunc],
 
 	//Tension actions
 
@@ -113,7 +114,7 @@ export const macrosMap: Map<string, Function> = new Map<string, Function>([
 
 
 	//Adversary unique
-	["disquiet", disquiet],
+	["disquiet", disquiet as MacroFunc],
 
 	//Basic Macros
 ]);

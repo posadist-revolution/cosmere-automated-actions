@@ -36,18 +36,18 @@ export async function illumination(item: CosmereItem, actor: CosmereActor){
 
 }
 
-export function dismissComplexIllusion(item: CosmereItem){
+export function dismissComplexIllusion(item: CosmereItem, actor: CosmereActor){
     item.delete();
 }
-export function dismissDisguise(item: CosmereItem){
+export function dismissDisguise(item: CosmereItem, actor: CosmereActor){
     item.delete();
 }
 
-export function complexIllusionRound(item: CosmereItem, actor: CosmereActor){
+export function complexIllusionRound(item: CosmereItem, actor: CosmereActor, turn: Combat.HistoryData){
     //Subtracts 1 investiture from actor every combat round
     const actorInv = actor.system.resources.inv.value;
     if(actorInv < 1){
-        dismissComplexIllusion(item);
+        dismissComplexIllusion(item, actor);
         return;
     }
     const newInv = actorInv - 1;

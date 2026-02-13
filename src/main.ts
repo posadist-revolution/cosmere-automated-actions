@@ -48,7 +48,7 @@ Hooks.on(HOOKS.USE_ITEM, (item, _options) => {
     var itemId = item.system.id;
 	if(!macrosMap.has(itemId)){itemId = nameToId(item.name)};
     const macro = globalThis.cosmereAutomatedActions.macrosMap.get(itemId);
-    if(macro) macro(item,actor);
+    if(macro && actor) macro(item, actor);
 })
 
 //Adds conditions to attack rolls
@@ -103,7 +103,7 @@ Hooks.on('combatTurnChange', (
         const startTurnItemFunc = startTurnItemMap.get(itemId);
         if(startTurnItemFunc){
             console.log(`Calling start turn func for ${itemId}`)
-            startTurnItemFunc(item, combatant.actor);
+            startTurnItemFunc(item, combatant.actor, current);
         };
     });
 
@@ -118,7 +118,7 @@ Hooks.on('combatTurnChange', (
         const startTurnEffectFunc = startTurnEffectMap.get(effectId);
         if(startTurnEffectFunc){
             console.log(`Calling start turn func for ${effectId}`)
-            startTurnEffectFunc(effect, combatant.actor);
+            startTurnEffectFunc(effect, current);
         };
     });
 });
@@ -145,7 +145,7 @@ Hooks.on('combatTurnChange', (
         const endTurnItemFunc = endTurnItemMap.get(itemId);
         if(endTurnItemFunc){
             console.log(`Calling end turn func for ${itemId}`)
-            endTurnItemFunc(item, combatant.actor);
+            endTurnItemFunc(item, combatant.actor, prior);
         };
     });
 
@@ -162,7 +162,7 @@ Hooks.on('combatTurnChange', (
         const endTurnEffectFunc = endTurnEffectMap.get(effectId);
         if(endTurnEffectFunc){
             console.log(`Calling end turn func for ${effectId}`)
-            endTurnEffectFunc(effect, combatant.actor);
+            endTurnEffectFunc(effect, prior);
         };
     });
 

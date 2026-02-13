@@ -42,7 +42,7 @@ export async function gravitation(item: CosmereItem, actor: CosmereActor){
         }]
     })
 }
-export function dismissLashing(item: CosmereItem){
+export function dismissLashing(item: CosmereItem, actor: CosmereActor){
     item.delete();
 }
 
@@ -51,7 +51,7 @@ export async function gravitationRound(item: CosmereItem){
     const actor = item.actor!;
     const actorInv = actor.system.resources.inv.value!;
         if(actorInv < 1){
-            dismissLashing(item);
+            dismissLashing(item, actor);
             return
         }
         const newInv = actorInv - 1;

@@ -1,6 +1,7 @@
+import { CosmereActor, CosmereItem } from "@src/declarations/cosmere-rpg/documents";
 import { getFirstTarget } from "../../../utils/helpers";
 
-export async function fromTheBrink(){
+export async function fromTheBrink(item: CosmereItem, actor: CosmereActor){
     const target = getFirstTarget()
     //If user isn't dead, throws error
     if (target?.actor?.system.resources.hea.value! > 0){

@@ -53,22 +53,21 @@ export async function characterRegrowthEffectStartTurn(effect: CosmereActiveEffe
     await targetActor.update({ 'system.resources.hea.value': newHealth } as any);
 }
 
-export async function characterRegrowthExpendInvestiture(item: CosmereItem, turn: Combat.HistoryData){
+export async function characterRegrowthExpendInvestiture(item: CosmereItem, actor: CosmereActor, turn: Combat.HistoryData){
     //TODO: Check if this is a boss turn before decrementing remaining investiture
     const effectsUUIDs = item.flags[MODULE_ID]?.effectsUuids
     for(const effectUUID of effectsUUIDs!){
         let effect = await fromUuid(effectUUID) as CosmereActiveEffect;
-        const casterActor = item.parent as CosmereActor;
         let hasExtendedRegrowth = false;
         console.log("Removing investiture from regrowth infusion");
-        let progressionTalents = getSurgeTalents(casterActor, "prg");
+        let progressionTalents = getSurgeTalents(actor, "prg");
         for(const talent of progressionTalents){
             if(talent.system.id == "extended-regrowth"){
                 hasExtendedRegrowth = true;
             }
         }
-        if(!expendInvestiture(effect, turn.round!, casterActor.system.skills.prg.rank, hasExtendedRegrowth)){
-            cancelCharacterRegrowth(item, casterActor);
+        if(!expendInvestiture(effect, turn.round!, actor.system.skills.prg.rank, hasExtendedRegrowth)){
+            cancelCharacterRegrowth(item, actor);
         }
         // let investitureRemaining = effect.getFlag(MODULE_ID, "infusion_inv_remaining");
         // console.log(`Investiture remaining: ${investitureRemaining}`);
