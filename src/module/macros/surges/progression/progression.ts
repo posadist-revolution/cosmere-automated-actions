@@ -66,7 +66,7 @@ export async function characterRegrowthExpendInvestiture(item: CosmereItem, acto
                 hasExtendedRegrowth = true;
             }
         }
-        if(!expendInvestiture(effect, turn.round!, actor.system.skills.prg.rank, hasExtendedRegrowth)){
+        if(!await expendInvestiture(effect, turn.round!, actor.system.skills.prg.rank, hasExtendedRegrowth)){
             cancelCharacterRegrowth(item, actor);
         }
         // let investitureRemaining = effect.getFlag(MODULE_ID, "infusion_inv_remaining");
