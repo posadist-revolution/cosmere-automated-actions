@@ -57,7 +57,7 @@ import { MacroFunc } from "../index.js"
 
 //Basic Macros
 
-export const macrosMap: Map<string, MacroFunc> = new Map<string, MacroFunc>([
+export var macrosMap: Map<string, MacroFunc> = new Map<string, MacroFunc>([
 	//Common stormlight actions
 	["breathe-stormlight", breatheStormlight as MacroFunc],
 	["enhance", enhance as MacroFunc],

@@ -49,18 +49,23 @@ export async function characterRegrowthEffectStartTurn(effect: CosmereActiveEffe
     let progressionMod = casterActor.system.skills.prg.rank;
     let rollFormula = "@scalar.power.prg.die";
     for(const talent of progressionTalents){
-        if(talent.system.id == "reliable-progression"){
+        if(talent.system.id == PRG.RELIABLE_PROGRESSION){
             let progressionRank = casterActor.system.skills.prg.rank;
             rollFormula = `{@scalar.power.prg.die, ${progressionRank}}kh`;
         }
-        if(talent.system.id == "swift-regeneration"){
-
+        else if(talent.system.id == PRG.SWIFT_REGENERATION){
+            swiftRegeneration = true;
         }
     }
+    if(swiftRegeneration){
+        rollFormula += ` + ${casterActor.system.skills.prg.mod.value}`;
+    }
+    //TODO: Add effects from Swift Healer and Applied Medicine
 
     const rollData = casterActor.getRollData();
     let r = await new Roll(rollFormula, rollData).evaluate();
     await r.toMessage({
+        speaker: ChatMessage.getSpeaker({ actor: casterActor }),
         content: `${casterActor.name} heals ${targetActor.name}`,
     })
     const targetHealth = targetActor.system.resources.hea.value;
@@ -74,7 +79,6 @@ export async function characterRegrowthExpendInvestiture(item: CosmereItem, acto
     for(const effectUUID of effectsUUIDs!){
         let effect = await fromUuid(effectUUID) as CosmereActiveEffect;
         let hasExtendedRegrowth = false;
-        console.log("Removing investiture from regrowth infusion");
         let progressionTalents = getSurgeTalents(actor, "prg");
         for(const talent of progressionTalents){
             if(talent.system.id == "extended-regrowth"){
@@ -84,32 +88,6 @@ export async function characterRegrowthExpendInvestiture(item: CosmereItem, acto
         if(!await expendInvestiture(effect, turn.round!, actor.system.skills.prg.rank, hasExtendedRegrowth)){
             cancelCharacterRegrowth(item, actor);
         }
-        // let investitureRemaining = effect.getFlag(MODULE_ID, "infusion_inv_remaining");
-        // console.log(`Investiture remaining: ${investitureRemaining}`);
-        // let newInvRemaining = investitureRemaining;
-        // if(hasExtendedRegrowth){
-        //     let roundsSinceEffectCreated = turn.round! - effect.duration.startRound!;
-        //     if(roundsSinceEffectCreated % casterActor.system.skills.prg.rank == 0 && turn.round! > effect.duration.startRound!){
-        //         newInvRemaining--;
-        //     }
-        // }
-        // else{
-        //     newInvRemaining--;
-        // }
-
-        // if(newInvRemaining == 0){
-        //     cancelCharacterRegrowth(item, casterActor);
-        // }
-        // else if(newInvRemaining != investitureRemaining){
-        //     effect.update({
-        //         name: `Regrowth Infusion (${newInvRemaining} inv left)`,
-        //         flags:{
-        //             [MODULE_ID]:{
-        //                 infusion_inv_remaining: newInvRemaining
-        //             }
-        //         }
-        //     })
-        // }
     }
 }
 

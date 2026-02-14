@@ -26,7 +26,6 @@ export async function activateAllItemEffects(item: CosmereItem){
 export async function giveActorItem(actor: CosmereActor, itemUUID: string): Promise<CosmereItem | undefined>{
     // const cosmereItemClass = getDocumentClass('Item') as unknown as typeof CosmereItem;
     const itemId = await fromUuid(itemUUID);
-    console.log(itemId);
     // @ts-ignore
     const item = await Item.create((itemId.toObject()), { parent: actor }) as CosmereItem | undefined;
     if(item){

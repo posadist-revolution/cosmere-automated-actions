@@ -1,7 +1,7 @@
 import { TurnChangeEffectFunc, TurnChangeItemFunc } from "..";
 
 
-export const endTurnItemMap: Map<string, TurnChangeItemFunc> = new Map<string, TurnChangeItemFunc>([
+export var endTurnItemMap: Map<string, TurnChangeItemFunc> = new Map<string, TurnChangeItemFunc>([
 	//Common stormlight actions
 
 	//Abrasion actions

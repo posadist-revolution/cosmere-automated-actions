@@ -91,5 +91,5 @@ export async function expendInvestiture(effect: CosmereActiveEffect, round: numb
 
 export function getSurgeTalents(actor: CosmereActor, surgePower: string): CosmereItem[]{
     //@ts-ignore
-    return actor.items.filter(i=> i.type === "talent" && i.system.power == surgePower);
+    return actor.talents.filter(i => i.system.power == surgePower);
 }

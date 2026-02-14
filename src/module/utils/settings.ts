@@ -1,10 +1,5 @@
 import { MODULE_ID } from "../constants"
 
-export const settings = [
-    {
-    },
-]
-
 export const SETTINGS = {
 	USE_AUTOMATIONS: 'useAutomations',
     SPHERE_DUNNING: 'sphereDunning',

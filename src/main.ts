@@ -8,8 +8,9 @@ import { getModuleSetting, registerModuleSettings, SETTINGS } from "@module/util
 import { nameToId } from "@module/utils/helpers.js";
 import { applyRollConditions, decrementExhausted } from "@module/automations/conditions.js";
 import { COSMERE_AUTOMATED_ACTIONS } from "@module/config";
-import { macrosMap, startTurnItemMap, startTurnEffectMap, endTurnEffectMap, endTurnItemMap } from "./module/macros/maps";
+import { macrosMap, startTurnItemMap, startTurnEffectMap, endTurnEffectMap, endTurnItemMap, invFromZeroMap, invToZeroMap } from "./module/macros/maps";
 import { MODULE_ID } from "./module/constants";
+import { registerAllMacros } from "./module/macros/registration-helpers";
 
 declare global{
     interface CONFIG {
@@ -36,6 +37,7 @@ Hooks.once('init', () => {
 	}
 
 	registerModuleSettings();
+    registerAllMacros();
 });
 
 //Automates item actions
@@ -46,6 +48,8 @@ Hooks.on(HOOKS.USE_ITEM, (item, _options) => {
     //Gets item ID, checks if item has an associated macro, and then calls it
     const actor = item.actor;
     var itemId = item.system.id;
+    // console.log("Checking item usage: ");
+    // console.log(item);
 	if(!macrosMap.has(itemId)){itemId = nameToId(item.name)};
     const macro = globalThis.cosmereAutomatedActions.macrosMap.get(itemId);
     if(macro && actor) macro(item, actor);
@@ -83,6 +87,9 @@ Hooks.on(HOOKS.REST, (actor, length) => {
 });
 
 function shouldCheckTurnStart(cosmereCombat: CosmereCombat, prior: Combat.HistoryData, current: Combat.HistoryData){
+    // TODO: Performance improvements by creating a new boolean flag on actor, which updates to "true" when we add a thing which needs checking every turn,
+    // and resets to false when we check a turn start and don't do anything. We need a different flag per turn event category, and to change the
+    // startTurnItemFunc return type
     return (getModuleSetting(SETTINGS.USE_AUTOMATIONS) && current.turn != null && game.user?.isActiveGM)
 }
 //Turn start hooks
@@ -96,19 +103,19 @@ Hooks.on('combatTurnChange', (
 	};
     //loops through combatants checking each item for start-turn behavior
     let combatant = cosmereCombat.turns[current.turn!];
-    console.log(`Checking ${combatant.name} for start-turn items`);
+    // console.log(`Checking ${combatant.name} for start-turn items`);
     combatant.actor.items.forEach((item)=>{
         var itemId = item.system.id;
 	    if(!startTurnItemMap.has(itemId)){itemId = nameToId(item.name)};
         const startTurnItemFunc = startTurnItemMap.get(itemId);
         if(startTurnItemFunc){
-            console.log(`Calling start turn func for ${itemId}`)
+            // console.log(`Calling start turn func for ${itemId}`)
             startTurnItemFunc(item, combatant.actor, current);
         };
     });
 
     //Checking activeEffects
-    console.log(`Checking ${combatant.name} for start-turn effects`);
+    // console.log(`Checking ${combatant.name} for start-turn effects`);
     combatant.actor.effects.forEach((effect)=>{
         if(!effect.flags[MODULE_ID]){
             return;
@@ -117,7 +124,7 @@ Hooks.on('combatTurnChange', (
 	    if(!startTurnEffectMap.has(effectId)){effectId = nameToId(effect.name)};
         const startTurnEffectFunc = startTurnEffectMap.get(effectId);
         if(startTurnEffectFunc){
-            console.log(`Calling start turn func for ${effectId}`)
+            // console.log(`Calling start turn func for ${effectId}`)
             startTurnEffectFunc(effect, current);
         };
     });
@@ -138,38 +145,35 @@ Hooks.on('combatTurnChange', (
     //loops through combatants checking each item for end-turn behavior
     //Checking items
     let combatant = cosmereCombat.turns[prior.turn!];
-    console.log(`Checking ${combatant.name} for end-turn items`);
+    // console.log(`Checking ${combatant.name} for end-turn items`);
     combatant.actor.items.forEach((item)=>{
         var itemId = item.system.id;
 	    if(!endTurnItemMap.has(itemId)){itemId = nameToId(item.name)};
         const endTurnItemFunc = endTurnItemMap.get(itemId);
         if(endTurnItemFunc){
-            console.log(`Calling end turn func for ${itemId}`)
+            // console.log(`Calling end turn func for ${itemId}`)
             endTurnItemFunc(item, combatant.actor, prior);
         };
     });
 
     //Checking activeEffects
-    console.log(`Checking ${combatant.name} for end-turn effects`);
-    console.log(combatant.actor);
+    // console.log(`Checking ${combatant.name} for end-turn effects`);
+    // console.log(combatant.actor);
     combatant.actor.effects.forEach((effect)=>{
         if(!effect.flags[MODULE_ID]){
             return;
         }
         var effectId = effect.flags[MODULE_ID]?.end_turn_id!;
-        console.log(`Effect: ${effect.id}`)
 	    if(!endTurnEffectMap.has(effectId)){effectId = nameToId(effect.name)};
         const endTurnEffectFunc = endTurnEffectMap.get(effectId);
         if(endTurnEffectFunc){
-            console.log(`Calling end turn func for ${effectId}`)
+            // console.log(`Calling end turn func for ${effectId}`)
             endTurnEffectFunc(effect, prior);
         };
     });
 
 
 });
-
-Hooks.on
 
 function shouldCheckRoundChange(cosmereCombat: CosmereCombat, prior: Combat.HistoryData, current: Combat.HistoryData){
     return (getModuleSetting(SETTINGS.USE_AUTOMATIONS) && game.user?.isActiveGM && prior.round! < current.round!)
@@ -185,3 +189,50 @@ Hooks.on('combatTurnChange', (
     }
 
 });
+
+// Investiture change hooks
+function shouldCheckInvChanged(actor: CosmereActor, changed: Actor.UpdateData){
+    return foundry.utils.hasProperty(changed, 'system.resources.inv.value');
+}
+
+function shouldCheckInvToZero(actor: CosmereActor, changed: Actor.UpdateData){
+    if(changed.system.resources.inv.value == 0){
+        return true;
+    }
+    return false;
+}
+
+function shouldCheckInvFromZero(actor: CosmereActor, changed: Actor.UpdateData){
+    if(actor.system.resources.inv.value == 0){
+        return true;
+    }
+    return false;
+}
+
+Hooks.on('preUpdateActor', (
+    actor: CosmereActor,
+    changed: Actor.UpdateData
+) => {
+    if(!shouldCheckInvChanged(actor, changed)){
+        return;
+    }
+
+    if(shouldCheckInvToZero(actor, changed)){
+        for(const effect of actor.effects){
+            const noInvFunc = invToZeroMap.get(effect.flags[MODULE_ID]?.no_inv_id!);
+            if(noInvFunc){
+                noInvFunc(actor);
+            }
+        }
+    }
+    else if (shouldCheckInvFromZero(actor, changed)){
+        // Handle going from 0 investiture to some investiture
+        for(const talent of actor.talents){
+            const gainInvFunc = invFromZeroMap.get(talent.system.id);
+            if(gainInvFunc){
+                gainInvFunc(actor);
+            }
+        }
+
+    }
+})
