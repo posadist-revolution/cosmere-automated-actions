@@ -1,0 +1,56 @@
+{
+    "type": "power",
+    "name": "Cancel Abrasion Infusion",
+    "img": "icons/magic/life/cross-beam-green.webp",
+    "system": {
+        "id": "cancel-Abrasion-infusion",
+        "type": "surge",
+        "description": {
+            "value": "<p>Cancel the abrasion infusion on yourself</p>",
+            "chat": "",
+            "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+            "value": 0,
+            "unit": "lb"
+        },
+        "price": {
+            "value": 0,
+            "currency": "none",
+            "denomination": {
+                "primary": "none",
+                "secondary": "none"
+            },
+            "unit": "none"
+        },
+        "activation": {
+            "type": "none",
+            "cost": {
+                "value": null
+            },
+            "consume": [],
+            "flavor": "",
+            "attribute": "default",
+            "plotDie": false,
+            "opportunity": null,
+            "complication": null,
+            "uses": null
+        },
+        "damage": {
+            "formula": null,
+            "type": null
+        },
+        "events": {},
+        "relationships": {}
+    },
+    "effects": [],
+    "folder": "7Hq5m3fLlhBO9Krc",
+    "flags": {},
+    "ownership": {
+        "default": 0
+    },
+    "_id": "l4azK3bv7GZcsZIv",
+    "sort": 0,
+    "_key": "!items!l4azK3bv7GZcsZIv"
+}
