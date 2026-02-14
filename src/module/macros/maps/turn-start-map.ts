@@ -1,3 +1,5 @@
+import { TurnChangeEffectFunc, TurnChangeItemFunc } from "../index.js";
+
 //Common stormlight actions
 
 //Abrasion actions
@@ -13,8 +15,7 @@
 
 
 //Graviatation actions
-import { TurnChangeEffectFunc, TurnChangeItemFunc } from "../index.js";
-import { gravitationRound } from "../surges/gravitation/gravitation.js"
+
 
 //Illumination actions
 import { complexIllusionRound } from "../surges/illumination/illumination.js"
@@ -67,7 +68,6 @@ export var startTurnItemMap: Map<string, TurnChangeItemFunc> = new Map<string, T
 
 
 	//Graviatation actions
-	["dismiss-lashing", gravitationRound as TurnChangeItemFunc],
 
 
 	//Illumination actions

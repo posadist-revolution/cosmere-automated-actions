@@ -216,8 +216,9 @@ Hooks.on('preUpdateActor', (
     if(!shouldCheckInvChanged(actor, changed)){
         return;
     }
-
+    // console.log("Checking from an investiture change");
     if(shouldCheckInvToZero(actor, changed)){
+        // console.log("Checking for an action to take on hitting 0 inv");
         for(const effect of actor.effects){
             const noInvFunc = invToZeroMap.get(effect.flags[MODULE_ID]?.no_inv_id!);
             if(noInvFunc){
@@ -226,6 +227,7 @@ Hooks.on('preUpdateActor', (
         }
     }
     else if (shouldCheckInvFromZero(actor, changed)){
+        // console.log("Checking for an action to take gaining inv");
         // Handle going from 0 investiture to some investiture
         for(const talent of actor.talents){
             const gainInvFunc = invFromZeroMap.get(talent.system.id);
