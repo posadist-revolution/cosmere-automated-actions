@@ -1,0 +1,64 @@
+{
+    "type": "power",
+    "name": "Skate",
+    "img": "icons/magic/control/debuff-energy-snare-blue.webp",
+    "system": {
+        "id": "skate",
+        "type": "surge",
+        "description": {
+            "value": "<p> You can skate across the ground as if it were ice. Spend 2 focus to Move (as <span class=\"cosmere-icon\">0</span>) in a straight line on the ground. You can accomplish this frictionless movement without practice—though you’ll need experience to do it gracefully!</p>",
+            "chat": "",
+            "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+            "value": 0,
+            "unit": "lb"
+        },
+        "price": {
+            "value": 0,
+            "currency": "none",
+            "denomination": {
+                "primary": "none",
+                "secondary": "none"
+            },
+            "unit": "none"
+        },
+        "activation": {
+            "type": "utility",
+            "cost": {
+                "type": "fre",
+                "value": null
+            },
+            "consume": [{
+                "type": "resource",
+                "resource": "foc",
+                "value": {
+                    "min": 2,
+                    "max": 2
+                }
+            }],
+            "flavor": "",
+            "attribute": "default",
+            "plotDie": false,
+            "opportunity": null,
+            "complication": null,
+            "uses": null
+        },
+        "damage": {
+            "formula": null,
+            "type": null
+        },
+        "events": {},
+        "relationships": {}
+    },
+    "effects": [],
+    "folder": "7Hq5m3fLlhBO9Krc",
+    "flags": {},
+    "ownership": {
+        "default": 0
+    },
+    "_id": "b39iL8GICQx7fUr3",
+    "sort": 0,
+    "_key": "!items!b39iL8GICQx7fUr3"
+}

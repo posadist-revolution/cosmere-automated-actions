@@ -1,0 +1,86 @@
+{
+    "type": "power",
+    "name": "Regrowth Infusion",
+    "img": "icons/magic/life/cross-beam-green.webp",
+    "system": {
+        "id": "regrowth-on-turn",
+        "type": "surge",
+        "description": {
+            "value": "<p>Continuous regrowth infusion</p>",
+            "chat": "",
+            "short": ""
+        },
+        "quantity": 1,
+        "weight": {
+            "value": 0,
+            "unit": "lb"
+        },
+        "price": {
+            "value": 0,
+            "currency": "none",
+            "denomination": {
+                "primary": "none",
+                "secondary": "none"
+            },
+            "unit": "none"
+        },
+        "activation": {
+            "type": "utility",
+            "cost": {
+                "value": null
+            },
+            "consume": [],
+            "flavor": "",
+            "attribute": "default",
+            "plotDie": false,
+            "opportunity": null,
+            "complication": null,
+            "uses": null
+        },
+        "damage": {
+            "formula": null,
+            "type": null
+        },
+        "events": {},
+        "relationships": {}
+    },
+    "effects": [
+        {
+            "name": "Character Regrowth",
+            "img": "icons/magic/life/cross-beam-green.webp",
+            "disabled": false,
+            "duration": {
+                "rounds": 1,
+                "startTime": null,
+                "seconds": null,
+                "combat": null,
+                "turns": null,
+                "startRound": null,
+                "startTurn": null
+            },
+            "_id": "l4azK3bv7GZcsZIv",
+            "type": "base",
+            "system": {
+                "isStackable": false,
+                "stacks": null
+            },
+            "changes": [],
+            "description": "Regrowth Infusion",
+            "origin": null,
+            "tint": "#ffffff",
+            "transfer": true,
+            "statuses": [],
+            "sort": 0,
+            "flags": {},
+            "_key": "!items.effects!OnyFplC4STyvuGRe.l4azK3bv7GZcsZIv"
+        }
+    ],
+    "folder": "atcn34pXpBcZhT2o",
+    "flags": {},
+    "ownership": {
+        "default": 0
+    },
+    "_id": "OnyFplC4STyvuGRe",
+    "sort": 0,
+    "_key": "!items!OnyFplC4STyvuGRe"
+}

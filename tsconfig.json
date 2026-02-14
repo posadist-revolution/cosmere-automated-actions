@@ -1,0 +1,35 @@
+{
+	"compilerOptions": {
+		"types": [
+			"@league-of-foundry-developers/foundry-vtt-types",
+			"@types/jquery",
+			"node"
+		],
+		"target": "esnext",
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"strictNullChecks": true,
+		"outDir": "./build",
+		"noImplicitReturns": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"skipLibCheck": true,
+		"allowJs": true,
+		"paths": {
+			"@src/*": [
+				"./src/*"
+			],
+			"@module/*": [
+				"./src/module/*"
+			],
+			"@system/*": [
+				"./src/declarations/cosmere-rpg/*"
+			]
+		}
+	},
+	"exclude": [
+		"module.bak/**"
+	]
+}
