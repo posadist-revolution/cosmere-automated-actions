@@ -49,6 +49,7 @@ export async function division(item: CosmereItem, actor: CosmereActor){
                     messageConfig.flags["cosmere-rpg"] = {
                         message: {
                             type: 'action',
+                            // @ts-ignore - accessing protected method
                             description: await item.getDescriptionHTML(),
                             item: item.id,
                         },

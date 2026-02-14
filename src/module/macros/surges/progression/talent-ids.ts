@@ -2,6 +2,8 @@ export const PRG = {
     PROGRESSION: 'progression',
     CANCEL_REGROWTH_INFUSION: 'cancel-regrowth-infusion',
     REGROWTH_INFUSION: 'regrowth-infusion',
+    // Items
+    PRG_ITEM: 'prg',
     // Talents
     INJURY_REGROWTH: 'injury-regrowth',
     FROM_THE_BRINK: 'from-the-brink',

@@ -3,13 +3,13 @@ import { CosmereItem, CosmereActor, LootItem } from "@system/documents";
 
 export async function breatheStormlight(item: CosmereItem, actor: CosmereActor){
   //Sets investiture value to max
-  console.log(`Current investiture is ${actor.system.resources.inv.value} out of ${actor.system.resources.inv.max.value}`);
+  // console.log(`Current investiture is ${actor.system.resources.inv.value} out of ${actor.system.resources.inv.max.value}`);
   let invToRefill = 0;
   if(getModuleSetting(SETTINGS.SPHERE_DUNNING)){
     //@ts-ignore
 	  let actSpheres = actor.items.filter(i=> i.type === "loot" && i.system.price.currency === "spheres" && i.system.quantity > 0);
     actSpheres = actSpheres.filter(i=> i.name.toLowerCase().includes("mark") || i.name.toLowerCase().includes("broam"));
-    console.log(actSpheres);
+    // console.log(actSpheres);
     invToRefill = actor.system.resources.inv.max.value - actor.system.resources.inv.value;
     while (invToRefill > 0){
       if(!(await drainRandomSphere(actSpheres, actor))){
@@ -41,7 +41,7 @@ async function drainRandomSphere(actSpheres: CosmereItem[], actor: CosmereActor)
     return false;
   }
   let sphereNumberToDrainFrom = Math.floor(Math.random() * totalNumSpheres);
-  console.log(`Draining from sphere #${sphereNumberToDrainFrom}`);
+  // console.log(`Draining from sphere #${sphereNumberToDrainFrom}`);
   totalNumSpheres = 0;
   let sphereIndexToDrainFrom = 0;
   for(const sphereItem of actSpheres){
@@ -61,7 +61,7 @@ async function drainRandomSphere(actSpheres: CosmereItem[], actor: CosmereActor)
   //find a matching dun sphere object or make one if it doens't exist
   //@ts-ignore
   let dunSphere = actor.items.filter(k=> k.type === "loot" && k.system.price.currency === "dun" && k.name.includes(actSpheres[sphereIndexToDrainFrom].name));
-  console.log(dunSphere);
+  // console.log(dunSphere);
   if (dunSphere.length<1) {
     let tempSphere = actSpheres[sphereIndexToDrainFrom].toObject();
     tempSphere.name += " (Dun)";
