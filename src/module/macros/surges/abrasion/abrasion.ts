@@ -4,6 +4,7 @@ import { CosmereItem, CosmereActor, CosmereActiveEffect } from "@src/declaration
 import { getInfusionInvestiture, getSurgeTalents, useCanceled } from "../helpers/surge-helpers";
 import { ABR } from "./talent-ids";
 
+//#region Effect Create Data
 const abrasionInfusionEffectDefaultCreateData: ActiveEffect.CreateData = {
     name:`Abrasion Infusion`,
     img: "icons/magic/control/debuff-energy-snare-blue.webp",
@@ -32,7 +33,10 @@ const abrasionInfusionEffectDefaultCreateData: ActiveEffect.CreateData = {
         }
     }
 };
+//#endregion
 
+// MACROS
+//#region Macro Functions
 export async function abrasion(item: CosmereItem, actor: CosmereActor){
     //TODO: Don't let actors with the Smooth Operator talent infuse themselves
     await foundry.applications.api.DialogV2.wait({
@@ -51,56 +55,6 @@ export async function abrasion(item: CosmereItem, actor: CosmereActor){
         }]
     })
 };
-
-async function applyAbrasionInfusion(item: CosmereItem, actor: CosmereActor){
-    //TODO
-}
-
-async function applySelfAbrasionInfusion(item: CosmereItem, actor: CosmereActor){
-
-    //Adds "Skate" item to caster
-    const skateUUID = "Compendium.cosmere-automated-actions.caaactions.Item.b39iL8GICQx7fUr3";
-    const cancelSelfAbrasionCasterUUID = "Compendium.cosmere-automated-actions.caaactions.Item.l4azK3bv7GZcsZIv";
-    const cancelSelfAbrasionCaster = await giveActorItem(actor, cancelSelfAbrasionCasterUUID);
-    const skate = await giveActorItem(actor, skateUUID)
-    let abrasionTalents = getSurgeTalents(actor, "abr");
-    let frictionlessMotion = false;
-    for(const talent of abrasionTalents){
-        // TODO: Talents that need handling:
-        // Smooth Operator
-        // Frictionless Motion
-        // Slick combatant?
-
-        if(talent.system.id == ABR.SMOOTH_OPERATOR && skate){
-            skate.system.activation.consume[0].value.actual -= 1;
-        }
-        else if(talent.system.id == ABR.FRICTIONLESS_MOTION){
-            frictionlessMotion = true;
-        }
-    }
-    let abrasionInfusionEffectCreateData = selfAbrasionEffectCreateData(frictionlessMotion);
-
-    if(cancelSelfAbrasionCaster) {
-        abrasionInfusionEffectCreateData.origin = cancelSelfAbrasionCasterUUID;
-
-        const abrasionInfusionEffect = await ActiveEffect.create(abrasionInfusionEffectCreateData, {parent: cancelSelfAbrasionCaster});
-        cancelSelfAbrasionCaster.setFlag(MODULE_ID, "effectsUuids", [abrasionInfusionEffect?.uuid!]);
-    }
-}
-
-function selfAbrasionEffectCreateData(frictionlessMotion: boolean): ActiveEffect.CreateData{
-    var abrasionInfusionEffectCreateData: ActiveEffect.CreateData = foundry.utils.deepClone(abrasionInfusionEffectDefaultCreateData);
-    if(frictionlessMotion){
-        abrasionInfusionEffectCreateData.changes = [
-            {
-                key: "system.movement.walk.rate.bonus",
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                value: "10"
-            }
-        ];
-    }
-    return abrasionInfusionEffectCreateData;
-}
 
 export async function cancelSelfAbrasion(item: CosmereItem, actor: CosmereActor){
     //finds items from target and caster and deletes it
@@ -124,7 +78,10 @@ export async function selfAbrasionTurnStart(cancelItem: CosmereItem, actor: Cosm
         actor.update({ 'system.resources.inv.value': currInv-1 } as any);
     }
 }
+//#endregion
 
+// INVESTITURE CHANGE EFFECTS
+//#region Inv Change Effects
 export async function selfAbrasionWhenInvested(actor: CosmereActor){
     let abrasionTalents = getSurgeTalents(actor, "abr");
     let frictionlessMotion = false;
@@ -173,3 +130,56 @@ export async function selfAbrasionCancelInvEmpty(actor: CosmereActor){
     actor.effects.getName("Abrasion Infusion")?.delete();
     actor.items.getName("Skate")?.delete();
 }
+//#endregion
+
+// HELPERS
+//#region Helpers
+async function applyAbrasionInfusion(item: CosmereItem, actor: CosmereActor){
+    //TODO
+}
+async function applySelfAbrasionInfusion(item: CosmereItem, actor: CosmereActor){
+
+    //Adds "Skate" item to caster
+    const skateUUID = "Compendium.cosmere-automated-actions.caaactions.Item.b39iL8GICQx7fUr3";
+    const cancelSelfAbrasionCasterUUID = "Compendium.cosmere-automated-actions.caaactions.Item.l4azK3bv7GZcsZIv";
+    const cancelSelfAbrasionCaster = await giveActorItem(actor, cancelSelfAbrasionCasterUUID);
+    const skate = await giveActorItem(actor, skateUUID)
+    let abrasionTalents = getSurgeTalents(actor, "abr");
+    let frictionlessMotion = false;
+    for(const talent of abrasionTalents){
+        // TODO: Talents that need handling:
+        // Smooth Operator
+        // Frictionless Motion
+        // Slick combatant?
+
+        if(talent.system.id == ABR.SMOOTH_OPERATOR && skate){
+            skate.system.activation.consume[0].value.actual -= 1;
+        }
+        else if(talent.system.id == ABR.FRICTIONLESS_MOTION){
+            frictionlessMotion = true;
+        }
+    }
+    let abrasionInfusionEffectCreateData = selfAbrasionEffectCreateData(frictionlessMotion);
+
+    if(cancelSelfAbrasionCaster) {
+        abrasionInfusionEffectCreateData.origin = cancelSelfAbrasionCasterUUID;
+
+        const abrasionInfusionEffect = await ActiveEffect.create(abrasionInfusionEffectCreateData, {parent: cancelSelfAbrasionCaster});
+        cancelSelfAbrasionCaster.setFlag(MODULE_ID, "effectsUuids", [abrasionInfusionEffect?.uuid!]);
+    }
+}
+
+function selfAbrasionEffectCreateData(frictionlessMotion: boolean): ActiveEffect.CreateData{
+    var abrasionInfusionEffectCreateData: ActiveEffect.CreateData = foundry.utils.deepClone(abrasionInfusionEffectDefaultCreateData);
+    if(frictionlessMotion){
+        abrasionInfusionEffectCreateData.changes = [
+            {
+                key: "system.movement.walk.rate.bonus",
+                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                value: "10"
+            }
+        ];
+    }
+    return abrasionInfusionEffectCreateData;
+}
+//#endregion

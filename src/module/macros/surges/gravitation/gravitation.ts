@@ -4,6 +4,7 @@ import { GRV } from "./talent-ids";
 import { getSurgeTalents, expendInvestiture, useCanceled, getInfusionInvestiture } from "../helpers/surge-helpers";
 import { MODULE_ID } from "@src/module/constants";
 
+//#region Effect Create Data
 const gravitationInfusionFriendlyEffectDefaultCreateData: ActiveEffect.CreateData = {
     name:`Basic lashing`,
     img: "icons/magic/earth/projectile-stone-ball-blue.webp",
@@ -70,8 +71,10 @@ const gravitationInfusionNonfriendlyEffectDefaultCreateData: ActiveEffect.Create
         }
     }
 };
+//#endregion
 
 // MACROS
+//#region Macro Functions
 
 export async function gravitation(item: CosmereItem, actor: CosmereActor){
     await foundry.applications.api.DialogV2.wait({
@@ -131,9 +134,10 @@ export async function cancelGravitationInfusion(cancelItem: CosmereItem, actor: 
     }
     cancelItem.delete();
 }
-
+//#endregion
 
 // START TURN EFFECTS
+//#region Start Turn Effects
 
 export async function gravitationTurnStart(cancelItem: CosmereItem, actor: CosmereActor, turn: Combat.HistoryData){
     for(const effectUuid of cancelItem.getFlag(MODULE_ID, "effectsUuids")){
@@ -171,9 +175,10 @@ async function characterGravitationExpendInvestiture(item: CosmereItem, actor: C
     }
 }
 
-
+//#endregion
 
 // INVESTITURE CHANGE EFFECTS
+//#region Inv Change Effects
 
 export async function selfGravitationWhenInvested(actor: CosmereActor){
     let gravitationInfusionEffectCreateData = await getFriendlyGravitationEffectCreateData(actor);
@@ -192,11 +197,10 @@ export async function selfGravitationWhenInvested(actor: CosmereActor){
 export async function selfGravitationCancelInvEmpty(actor: CosmereActor){
     actor.effects.getName("Basic lashing")?.delete();
 }
-
-
+//#endregion
 
 // HELPERS
-
+//#region Helpers
 async function applyFriendlyGravitationInfusion(item: CosmereItem, actor: CosmereActor){
     const target = getFirstTarget();
     if(!target){
@@ -282,3 +286,4 @@ async function getFriendlyGravitationEffectCreateData(actor: CosmereActor, item?
 
     return gravitationInfusionEffectCreateData;
 }
+//#endregion

@@ -4,7 +4,7 @@ import { MODULE_ID } from "@src/module/constants";
 import { expendInvestiture, getSurgeTalents, sizes, getInfusionInvestiture, useCanceled } from "../helpers/surge-helpers";
 import { PRG } from "./talent-ids";
 
-
+//#region Macro Functions
 export async function progression(item: CosmereItem, actor: CosmereActor){
     await foundry.applications.api.DialogV2.wait({
         window: { title: "Progression" },
@@ -31,6 +31,9 @@ export async function cancelCharacterRegrowth(item: CosmereItem, actor: CosmereA
     }
     item.delete();
 }
+//#endregion
+
+//#region Start Turn Effects
 
 export async function characterRegrowthEffectStartTurn(effect: CosmereActiveEffect, turn: Combat.HistoryData){
     const casterCancelItemUUID = effect.origin;
@@ -88,7 +91,9 @@ export async function characterRegrowthExpendInvestiture(item: CosmereItem, acto
         }
     }
 }
+//#endregion
 
+//#region Helpers
 async function applyPlantGrowthInfusion(item: CosmereItem, actor: CosmereActor){
     const target = getFirstTarget();
     const actorProgressionRank = actor.system.skills.prg.rank;
@@ -185,3 +190,4 @@ async function applyRegrowthInfusion(item: CosmereItem, actor: CosmereActor){
         cancelRegrowthCaster.setFlag(MODULE_ID, "effectsUuids", [regrowthInfusionEffect?.uuid!]);
     }
 }
+//#endregion
