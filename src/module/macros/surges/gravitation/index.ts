@@ -1,19 +1,20 @@
 import { GRV } from "./talent-ids";
 import { MacroDefinition, registerMacroDefinition } from "../..";
 import { gravitation, cancelGravitationInfusion, gravitationTurnStart, selfGravitationWhenInvested, selfGravitationCancelInvEmpty } from "./gravitation";
+import { log } from "@module/utils/helpers";
 
 const gravitationDefinition: MacroDefinition = {
     macros: [
-        [GRV.GRV_ITEM, gravitation],
-        [GRV.CANCEL_GRAVITATION_INFUSION, cancelGravitationInfusion]
+        {id: GRV.GRV_ITEM, funcSignature: gravitation},
+        {id: GRV.CANCEL_GRAVITATION_INFUSION, funcSignature: cancelGravitationInfusion}
     ],
-    startTurnItem: [GRV.CANCEL_GRAVITATION_INFUSION, gravitationTurnStart],
-    investitureFromZero: [GRV.MASTER_OF_THE_SKIES, selfGravitationWhenInvested],
-    investitureToZero: [GRV.MASTER_OF_THE_SKIES, selfGravitationCancelInvEmpty]
+    startTurnItem: {id: GRV.CANCEL_GRAVITATION_INFUSION, funcSignature: gravitationTurnStart},
+    investitureFromZero: {id: GRV.MASTER_OF_THE_SKIES, funcSignature: selfGravitationWhenInvested},
+    investitureToZero: {id: GRV.MASTER_OF_THE_SKIES, funcSignature: selfGravitationCancelInvEmpty}
 
 }
 
 export function registerGravitationDefinitions(){
-    console.log("CAA | Registering Gravitation Macros");
+    log("CAA | Registering Gravitation Macros");
     registerMacroDefinition(gravitationDefinition);
 }

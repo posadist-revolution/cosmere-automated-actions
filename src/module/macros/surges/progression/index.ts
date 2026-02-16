@@ -3,35 +3,31 @@ import { MacroDefinition, registerMacroDefinition } from "../..";
 import { progression, characterRegrowthEffectStartTurn, cancelCharacterRegrowth, characterRegrowthExpendInvestiture } from "./progression";
 import { injuryRegrowth } from "./injury-regrowth";
 import { fromTheBrink } from "./from-the-brink";
-
-    // ["injury-regrowth", injuryRegrowth],
-    // ["cancel-character-regrowth", cancelCharacterRegrowth],
-    // ["cancel-regrowth-infusion", cancelCharacterRegrowth],
-    // ["from-the-brink", fromTheBrink],
+import { log } from "@module/utils/helpers";
 
 const progressionDefinition: MacroDefinition = {
     macros: [
-        [PRG.PRG_ITEM, progression],
-        [PRG.CANCEL_REGROWTH_INFUSION, cancelCharacterRegrowth]
+        {id: PRG.PRG_ITEM, funcSignature: progression},
+        {id: PRG.CANCEL_REGROWTH_INFUSION, funcSignature: cancelCharacterRegrowth}
     ],
-    startTurnItem: [PRG.CANCEL_REGROWTH_INFUSION, characterRegrowthExpendInvestiture],
-    startTurnEffect: [PRG.REGROWTH_INFUSION, characterRegrowthEffectStartTurn],
+    startTurnItem: {id: PRG.CANCEL_REGROWTH_INFUSION, funcSignature: characterRegrowthExpendInvestiture},
+    startTurnEffect: {id: PRG.REGROWTH_INFUSION, funcSignature: characterRegrowthEffectStartTurn},
 }
 
 const injuryRegrowthDefinition: MacroDefinition = {
     macros: [
-        [PRG.INJURY_REGROWTH, injuryRegrowth]
+        {id: PRG.INJURY_REGROWTH, funcSignature: injuryRegrowth}
     ]
 }
 
 const fromTheBrinkDefinition: MacroDefinition = {
     macros: [
-        [PRG.FROM_THE_BRINK, fromTheBrink]
+        {id: PRG.FROM_THE_BRINK, funcSignature: fromTheBrink}
     ]
 }
 
 export function registerProgressionDefinitions(){
-    console.log("CAA | Registering Progression Macros");
+    log("CAA | Registering Progression Macros");
     registerMacroDefinition(progressionDefinition);
     registerMacroDefinition(injuryRegrowthDefinition);
     registerMacroDefinition(fromTheBrinkDefinition);
