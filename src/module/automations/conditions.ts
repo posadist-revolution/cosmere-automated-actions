@@ -1,10 +1,11 @@
 import { D20Roll } from "@system/dice";
 import { CosmereActiveEffect } from "@system/documents";
 import { CosmereActor } from "@system/documents/actor";
+import { log } from "../utils/helpers";
 
 export function applyRollConditions(roll: D20Roll, actor: CosmereActor){
     if(actor.effects.contents.length === 0){
-        console.log("CAA | No effects found");
+        log("CAA | No effects found");
         return;
     };
     //checks each effect of actor against list of conditions

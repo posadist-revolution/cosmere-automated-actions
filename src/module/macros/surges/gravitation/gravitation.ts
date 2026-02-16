@@ -1,5 +1,5 @@
 import { CosmereItem, CosmereActor, CosmereActiveEffect } from "@system/documents";
-import { getFirstTarget, giveActorItem } from "../../../utils/helpers";
+import { getFirstTarget, giveActorItem, log } from "@module/utils/helpers";
 import { GRV } from "./talent-ids";
 import { getSurgeTalents, expendInvestiture, useCanceled, getInfusionInvestiture } from "../helpers/surge-helpers";
 import { MODULE_ID } from "@src/module/constants";
@@ -263,7 +263,7 @@ async function getFriendlyGravitationEffectCreateData(actor: CosmereActor, item?
 
     //@ts-ignore
     gravitationInfusionEffectCreateData.flags[MODULE_ID].infusion_inv_remaining = infusedInvestiture;
-    console.log("Creating gravitation effect, grav rate: " + getGravitationRate(actor).toString())
+    log("Creating gravitation effect, grav rate: " + getGravitationRate(actor).toString())
     gravitationInfusionEffectCreateData.changes = [
         {
             key: "system.movement.fly.rate.override",
