@@ -45,8 +45,6 @@ export async function characterRegrowthEffectStartTurn(effect: CosmereActiveEffe
     //heals target
     let progressionTalents = getSurgeTalents(casterActor, "prg");
     let swiftRegeneration = false;
-    let reliableProgression = false;
-    let progressionMod = casterActor.system.skills.prg.rank;
     let rollFormula = "@scalar.power.prg.die";
     for(const talent of progressionTalents){
         if(talent.system.id == PRG.RELIABLE_PROGRESSION){
