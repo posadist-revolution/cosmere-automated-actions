@@ -5,7 +5,7 @@
     "_id": "TcddNgIyb1GGZGXn",
     "img": "icons/magic/earth/projectile-stone-ball-blue.webp",
     "system": {
-        "id": "dismiss-lashing",
+        "id": "cancel-gravitation-infusion",
         "type": "surge",
         "activation": {
             "type": "none",
@@ -35,47 +35,7 @@
         "customSkill": false,
         "skill": null
     },
-    "effects": [
-        {
-            "name": "Draining Stormlight",
-            "img": "icons/magic/earth/projectile-stone-ball-blue.webp",
-            "disabled": false,
-            "duration": {
-                "rounds": 1,
-                "startTime": null,
-                "seconds": null,
-                "combat": null,
-                "turns": null,
-                "startRound": null,
-                "startTurn": null
-            },
-            "_id": "7cCTAZGUll6QZp2N",
-            "type": "base",
-            "system": {
-                "isStackable": false,
-                "stacks": null
-            },
-            "changes": [],
-            "description": "",
-            "origin": null,
-            "tint": "#ffffff",
-            "transfer": true,
-            "statuses": [],
-            "sort": 0,
-            "flags": {},
-            "_stats": {
-                "compendiumSource": null,
-                "duplicateSource": null,
-                "coreVersion": "12.343",
-                "systemId": "cosmere-rpg",
-                "systemVersion": "1.0.2",
-                "createdTime": 1761238581182,
-                "modifiedTime": 1761238602431,
-                "lastModifiedBy": "bxGCma3Vmpied3qx"
-            },
-            "_key": "!items.effects!TcddNgIyb1GGZGXn.7cCTAZGUll6QZp2N"
-        }
-    ],
+    "effects": [],
     "sort": 0,
     "ownership": {
         "default": 0

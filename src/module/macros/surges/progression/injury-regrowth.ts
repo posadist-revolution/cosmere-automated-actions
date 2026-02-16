@@ -1,5 +1,6 @@
 import type { CosmereActor, CosmereItem } from "@system/documents";
 import { getFirstTarget } from "../../../utils/helpers";
+import { log } from "@module/utils/helpers";
 
 export async function injuryRegrowth(item: CosmereItem, actor: CosmereActor){
     const target = getFirstTarget();
@@ -45,7 +46,7 @@ export async function injuryRegrowth(item: CosmereItem, actor: CosmereActor){
                     injuryItem.delete();
                 }
             })
-            console.log("Added non permanant injury");
+            log("Added non permanant injury");
         }
     });
     //If target has no injuries, cancel

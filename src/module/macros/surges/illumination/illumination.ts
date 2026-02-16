@@ -1,5 +1,6 @@
 import { CosmereItem, CosmereActor } from "@system/documents";
 import { giveActorItem } from "../../../utils/helpers";
+import { log } from "@module/utils/helpers";
 
 export async function illumination(item: CosmereItem, actor: CosmereActor){
     await foundry.applications.api.DialogV2.wait({
@@ -10,7 +11,7 @@ export async function illumination(item: CosmereItem, actor: CosmereActor){
                 label: "Simple Illusion",
                 action: "simple-illusion",
                 callback: () => {
-                    console.log("simple illusion, currently no functionality");
+                    log("simple illusion, currently no functionality");
                 }
             },
             {

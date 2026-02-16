@@ -42,3 +42,9 @@ export function getFlags(item: CosmereItem){
     //     return worldFlags;
     // }
 }
+
+export function log(message: any, ...optionalParams: any[]){
+    if(DEBUG){
+        console.log(message, ...optionalParams);
+    }
+}
