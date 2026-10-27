@@ -106,6 +106,10 @@ declare class CosmereItem<
      * Does this item provide talents?
      */
     isTalentsProvider(): this is CosmereItem<TalentsProviderData>;
+    /**
+     * The top-level item this item is embedded in (3.x embedded actions), or itself
+     */
+    get root(): CosmereItem;
     get isFavorite(): boolean;
     /**
      * Checks if the talent item mode is active.
@@ -261,6 +265,15 @@ declare namespace CosmereItem {
          * Only used if the item has damage configured.
          */
         advantageModeDamage?: AdvantageMode;
+        /**
+         * The resources actually consumed (3.x), set before the useItem hook is called
+         */
+        consumeResponse?: ConsumeData[];
+    }
+    interface ConsumeData {
+        type: string;
+        resource?: string;
+        value: { min: number; max: number; actual: number };
     }
 }
 type CultureItem = CosmereItem<CultureItemData>;

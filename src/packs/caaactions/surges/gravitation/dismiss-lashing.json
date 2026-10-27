@@ -7,24 +7,6 @@
     "system": {
         "id": "cancel-gravitation-infusion",
         "type": "surge",
-        "activation": {
-            "type": "none",
-            "cost": {
-                "value": null,
-                "type": null
-            },
-            "consume": [],
-            "flavor": "",
-            "attribute": "default",
-            "plotDie": false,
-            "opportunity": null,
-            "complication": null,
-            "uses": null
-        },
-        "damage": {
-            "formula": null,
-            "type": null
-        },
         "description": {
             "value": "<p>Dismiss your current lashing</p>",
             "chat": "",
@@ -33,7 +15,63 @@
         "events": {},
         "relationships": {},
         "customSkill": false,
-        "skill": null
+        "skill": null,
+        "__embedded": {
+            "items": [
+                {
+                    "type": "action",
+                    "name": "Dismiss Lashing",
+                    "img": "icons/magic/earth/projectile-stone-ball-blue.webp",
+                    "_id": "J1FFqCOXgC41bp51",
+                    "system": {
+                        "id": "cancel-gravitation-infusion",
+                        "type": "basic",
+                        "description": {
+                            "value": "<p>Dismiss your current lashing</p>",
+                            "chat": "",
+                            "short": ""
+                        },
+                        "primaryResource": "none",
+                        "resources": {
+                            "uses": null,
+                            "charges": null,
+                            "ammo": null
+                        },
+                        "modality": null,
+                        "events": {},
+                        "relationships": {},
+                        "activation": {
+                            "type": "utility",
+                            "cost": {
+                                "type": "fre"
+                            },
+                            "consumption": [],
+                            "flavor": ""
+                        },
+                        "damage": {
+                            "skill": "default",
+                            "attribute": "default",
+                            "formula": null,
+                            "type": null
+                        },
+                        "skillTest": {
+                            "skill": "default",
+                            "attribute": "default",
+                            "plotDie": false
+                        }
+                    },
+                    "effects": [],
+                    "folder": null,
+                    "sort": 0,
+                    "ownership": {
+                        "default": 0
+                    },
+                    "flags": {},
+                    "items": [],
+                    "_key": "!items!J1FFqCOXgC41bp51"
+                }
+            ]
+        }
     },
     "effects": [],
     "sort": 0,

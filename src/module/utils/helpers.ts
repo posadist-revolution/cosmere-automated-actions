@@ -43,13 +43,19 @@ declare interface giveActorItemGMData {
 }
 
 export async function deleteItemAndDescendants(item: CosmereItem){
-    await deleteDescendantUuids(item.getFlag(MODULE_ID, "descendantUuids"));
-    await item.delete();
+    // In 3.x the use hook passes the embedded action, flags live on the owning item
+    const rootItem = item.root ?? item;
+    await deleteDescendantUuids(rootItem.getFlag(MODULE_ID, "descendantUuids") ?? []);
+    await rootItem.delete();
 }
 
 async function deleteDescendantUuids(descendantUuids: string[]){
     for(const uuid of descendantUuids){
-        const documentToDelete = await fromUuid(uuid) as CosmereDocument;
+        const documentToDelete = await fromUuid(uuid) as CosmereDocument | null;
+        // Already removed (expired, or deleted by hand)
+        if(!documentToDelete){
+            continue;
+        }
         if(documentToDelete.canUserModify(game.user!, "delete")){
             await documentToDelete.delete();
         }
@@ -59,8 +65,8 @@ async function deleteDescendantUuids(descendantUuids: string[]){
     }
 }
 async function deleteUuidGM(uuid: string){
-    const documentToDelete = await fromUuid(uuid) as CosmereDocument;
-    documentToDelete.delete();
+    const documentToDelete = await fromUuid(uuid) as CosmereDocument | null;
+    await documentToDelete?.delete();
 }
 export async function giveActorItem(actor: CosmereActor, itemUUID: string): Promise<CosmereItem | undefined>{
     if(actor.canUserModify(game.user!, "update")){

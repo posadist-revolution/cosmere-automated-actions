@@ -2,7 +2,7 @@
     "id": "cosmere-automated-actions",
     "title": "Cosmere Automated Actions",
     "description": "A Module to add automations for some of cosmere's more manual actions",
-    "version": "1.3.1",
+    "version": "1.4.0",
     "library": "false",
     "manifestPlusVersion": "1.2.0",
     "authors": [
@@ -17,9 +17,9 @@
             "discord": "posadistrevolution"
         }
     ],
-    "url": "https://github.com/CyprianStream/cosmere-automated-actions/",
-    "manifest": "https://raw.githubusercontent.com/CyprianStream/cosmere-automated-actions/refs/heads/master/src/module.json",
-    "download": "https://github.com/CyprianStream/cosmere-automated-actions/releases/download/release-1.3.1/cosmere-automated-actions-release-1.3.1.zip",
+    "url": "https://github.com/Razator73/cosmere-automated-actions/",
+    "manifest": "https://raw.githubusercontent.com/Razator73/cosmere-automated-actions/refs/heads/master/src/module.json",
+    "download": "https://github.com/Razator73/cosmere-automated-actions/releases/download/release-1.4.0/cosmere-automated-actions-release-1.4.0.zip",
     "compatibility": {
         "minimum": "13",
         "verified": "13",
@@ -77,8 +77,8 @@
                 "id": "cosmere-rpg",
                 "type": "system",
                 "compatibility": {
-                    "minimum": "2.0.5",
-                    "verified": "2.0.5"
+                    "minimum": "3.1.2",
+                    "verified": "3.1.2"
                 }
             }
         ]

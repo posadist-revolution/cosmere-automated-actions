@@ -87,4 +87,9 @@ export declare const enum HOOKS {
     /* ----- Enricher Hooks ----- */
     TRIGGER_TEST_ENRICHER = `${SYSTEM_ID}.triggerTestEnricher`,
     TRIGGER_DAMAGE_ENRICHER = `${SYSTEM_ID}.triggerDamageEnricher`,
+
+    /* ----- Combat Hooks (3.0+) ----- */
+    // Not fired while Cosmere Advanced Encounters overrides startCombat/nextRound
+    COMBAT_ROUND_START = `${SYSTEM_ID}.combatRoundStart`,
+    COMBAT_ROUND_END = `${SYSTEM_ID}.combatRoundEnd`,
 }

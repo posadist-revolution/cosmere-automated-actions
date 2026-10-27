@@ -9,7 +9,7 @@ import { getModuleSetting, registerModuleSettings, SETTINGS } from "@module/util
 import { nameToId, log, registerQueries } from "@module/utils/helpers.js";
 import { applyRollConditions, decrementExhausted } from "@module/automations/conditions.js";
 import { COSMERE_AUTOMATED_ACTIONS } from "@module/config";
-import { macrosMap, startTurnItemMap, startTurnEffectMap, endTurnEffectMap, endTurnItemMap, invFromZeroMap, invToZeroMap } from "./module/macros/maps";
+import { macrosMap, replaceSystemRollIds, startTurnItemMap, startTurnEffectMap, endTurnEffectMap, endTurnItemMap, invFromZeroMap, invToZeroMap } from "./module/macros/maps";
 import { MODULE_ID } from "./module/constants";
 import { registerAllMacros } from "./module/macros/registration-helpers";
 import { preloadHandlebarsTemplates } from "@module/utils/templates";
@@ -46,8 +46,20 @@ Hooks.once('init', () => {
     registerWelcomeMessage();
 });
 
+//Skips the system roll for actions whose roll a macro replaces (e.g. Regrowth heals each turn instead)
+Hooks.on(HOOKS.PRE_USE_ITEM, (item, _options) => {
+	if(getModuleSetting(SETTINGS.USE_AUTOMATIONS) && replaceSystemRollIds.has(item.system.id)){
+        // In-memory only, restored from source after the macro runs
+        item.system.damage.formula = "";
+	};
+    return true;
+})
+
 //Automates item actions
 Hooks.on(HOOKS.USE_ITEM, (item, _options) => {
+    if(replaceSystemRollIds.has(item.system.id)){
+        item.system.damage.formula = foundry.utils.getProperty(item._source, "system.damage.formula") as string;
+    }
 	if(!getModuleSetting(SETTINGS.USE_AUTOMATIONS)){
 		return;
 	};
@@ -58,7 +70,7 @@ Hooks.on(HOOKS.USE_ITEM, (item, _options) => {
     log(item);
 	if(!macrosMap.has(itemId)){itemId = nameToId(item.name)};
     const macro = globalThis.cosmereAutomatedActions.macrosMap.get(itemId);
-    if(macro && actor) macro(item, actor);
+    if(macro && actor) macro(item, actor, _options);
 })
 
 //Adds conditions to attack rolls

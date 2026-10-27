@@ -1,7 +1,7 @@
 import { CosmereActiveEffect, CosmereActor, CosmereItem } from "@src/declarations/cosmere-rpg/documents"
-import { macrosMap,startTurnItemMap, startTurnEffectMap, endTurnItemMap, endTurnEffectMap, invFromZeroMap, invToZeroMap } from './maps'
+import { macrosMap, replaceSystemRollIds, startTurnItemMap, startTurnEffectMap, endTurnItemMap, endTurnEffectMap, invFromZeroMap, invToZeroMap } from './maps'
 
-export type MacroFunc = ((item: CosmereItem, actor: CosmereActor) => Promise<void>);
+export type MacroFunc = ((item: CosmereItem, actor: CosmereActor, options?: CosmereItem.UseOptions) => Promise<void>);
 export type TurnChangeItemFunc = ((item: CosmereItem, actor: CosmereActor, turn: Combat.HistoryData) => Promise<void>);
 export type TurnChangeEffectFunc = ((effect: CosmereActiveEffect, turn: Combat.HistoryData) => Promise<void>);
 export type InvestitureChangeFunc = ((actor: CosmereActor) => Promise<void>);
@@ -14,6 +14,7 @@ export type MacroDefinition = {
     endTurnEffect?: {id: string, funcSignature: TurnChangeEffectFunc};
     investitureFromZero?: {id: string, funcSignature: InvestitureChangeFunc};
     investitureToZero?: {id: string, funcSignature: InvestitureChangeFunc};
+    replaceSystemRoll?: string[];
 }
 
 export function registerMacroDefinition(def: MacroDefinition){
@@ -39,5 +40,10 @@ export function registerMacroDefinition(def: MacroDefinition){
     }
     if(def.investitureToZero){
         invToZeroMap.set(def.investitureToZero.id, def.investitureToZero.funcSignature);
+    }
+    if(def.replaceSystemRoll){
+        for(const id of def.replaceSystemRoll){
+            replaceSystemRollIds.add(id);
+        }
     }
 }

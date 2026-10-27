@@ -34,15 +34,23 @@ export const sizes: Record<string, SizeInterface> = {
     gargantuan: { width: 4, height: 4, "texture.scaleX": 1, "texture.scaleY": 1 },
 };
 
-export async function useCanceled(item: CosmereItem, actor: CosmereActor){
+// Refunds the investiture spent when the action was used
+export async function useCanceled(item: CosmereItem, actor: CosmereActor, refund: number = 1){
     let currentInv = actor.system.resources.inv.value;
-    const newInv = currentInv + 1;
-    actor.update({ 'system.resources.inv.value': newInv } as any);
+    const newInv = currentInv + refund;
+    await actor.update({ 'system.resources.inv.value': newInv } as any);
 }
 
-export async function getInfusionInvestiture(item: CosmereItem, actor: CosmereActor){
-    // Available investiture is current + 1
-    let availableInv = actor.system.resources.inv.value + 1;
+// Investiture the system already took when the action was used (3.x actions with consumption configured)
+export function getConsumedInvestiture(options?: CosmereItem.UseOptions): number {
+    return (options?.consumeResponse ?? [])
+        .filter(consumption => consumption.type === "resource" && consumption.resource === "inv")
+        .reduce((total, consumption) => total + consumption.value.actual, 0);
+}
+
+export async function getInfusionInvestiture(item: CosmereItem, actor: CosmereActor, alreadySpent: number = 1){
+    // Available investiture includes what the action already spent
+    let availableInv = actor.system.resources.inv.value + alreadySpent;
     let promptConfig: foundry.applications.api.DialogV2.PromptConfig = {
         window: { title: "How much inv to infuse?" },
         content: `<input name="infusion" type="range" min="1" max="${availableInv}" step="1" autofocus>`,
@@ -54,40 +62,47 @@ export async function getInfusionInvestiture(item: CosmereItem, actor: CosmereAc
     }
     let infusedInvestiture = await foundry.applications.api.DialogV2.prompt(promptConfig) as number;
     let newInv = availableInv - infusedInvestiture;
-    actor.update({ 'system.resources.inv.value': newInv } as any);
+    await actor.update({ 'system.resources.inv.value': newInv } as any);
     return infusedInvestiture;
 }
 
 //
-export async function expendEffectInvestiture(effect: CosmereActiveEffect, round: number, skillRank: number = 1, extended?: boolean): Promise<boolean>{
-    let investitureRemaining = effect.getFlag(MODULE_ID, "infusion_inv_remaining");
-    let newInvRemaining = investitureRemaining;
-    if(extended){
-        let roundsSinceEffectCreated = round - effect.duration.startRound!;
-        if(roundsSinceEffectCreated % skillRank == 0 && round > effect.duration.startRound!){
-            newInvRemaining--;
-        }
-    }
-    else{
-        newInvRemaining--;
-    }
-
-    if(newInvRemaining == 0){
-        await expendEffectInvestitureMessage(effect);
+// Returns false when the infusion is over (out of investiture, or the effect is already gone)
+export async function expendEffectInvestiture(effect: CosmereActiveEffect | null, round: number, skillRank: number = 1, extended?: boolean): Promise<boolean>{
+    if(!effect){
         return false;
     }
-    else if(newInvRemaining != investitureRemaining){
-        let nameString = effect.name.replace(`(${investitureRemaining} inv left)`, `(${newInvRemaining} inv left)`);
-        await expendEffectInvestitureMessage(effect);
-        await effect.update({
-            name: nameString,
-            flags:{
-                [MODULE_ID]:{
-                    infusion_inv_remaining: newInvRemaining
-                }
-            }
-        });
+    // Infusions created before start_round was tracked fall back to core's duration data
+    const startRound = effect.getFlag(MODULE_ID, "start_round") ?? effect.duration.startRound ?? 0;
+    // Never expend on the round the infusion was created, or twice in one round
+    // (boss turns, re-activating a combatant, or stepping the tracker back and forth)
+    if(round <= startRound || effect.getFlag(MODULE_ID, "last_drain_round") === round){
+        return true;
     }
+    if(extended && (round - startRound) % skillRank != 0){
+        return true;
+    }
+    return await spendEffectInvestiture(effect, round);
+}
+
+// Spends one investiture from an infusion. Returns false when it has run out
+export async function spendEffectInvestiture(effect: CosmereActiveEffect, round: number): Promise<boolean>{
+    const investitureRemaining = effect.getFlag(MODULE_ID, "infusion_inv_remaining");
+    const newInvRemaining = investitureRemaining - 1;
+    await expendEffectInvestitureMessage(effect);
+    if(newInvRemaining <= 0){
+        return false;
+    }
+    const nameString = effect.name.replace(`(${investitureRemaining} inv left)`, `(${newInvRemaining} inv left)`);
+    await effect.update({
+        name: nameString,
+        flags:{
+            [MODULE_ID]:{
+                infusion_inv_remaining: newInvRemaining,
+                last_drain_round: round
+            }
+        }
+    });
     return true;
 }
 async function expendEffectInvestitureMessage(effect: CosmereActiveEffect){

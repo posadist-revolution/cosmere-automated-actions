@@ -27,6 +27,9 @@ fs.writeFileSync(packageLockJsonPath, JSON.stringify(packageLockJson, undefined,
 
 let moduleJson = JSON.parse(fs.readFileSync(moduleJsonPath, "utf8"));
 moduleJson.version = version;
-let moduleDownloadLink = `https://github.com/CyprianStream/cosmere-automated-actions/releases/download/release-${version}/cosmere-automated-actions-release-${version}.zip`
+// Derive owner/repo from the origin remote so forks publish to their own releases
+const originUrl = child_process.execSync('git remote get-url origin').toString().trim();
+const repoPath = originUrl.replace(/^.*github\.com[:/]/, "").replace(/\.git$/, "");
+let moduleDownloadLink = `https://github.com/${repoPath}/releases/download/release-${version}/cosmere-automated-actions-release-${version}.zip`
 moduleJson.download = moduleDownloadLink;
 fs.writeFileSync(moduleJsonPath, JSON.stringify(moduleJson, undefined, "    "));

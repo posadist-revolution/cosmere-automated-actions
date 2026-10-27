@@ -1,3 +1,24 @@
+# Release 1.4.0
+<sup>2026-xx-xx</sup>
+
+## Cosmere RPG 3.x support
+- Now requires Cosmere RPG system 3.1.2 or later.
+- Supports the Stormlight Handbook's 3.x Progression actions ("Progression: Plant Growth" and "Progression: Character Regrowth"). Character Regrowth uses the amount of Investiture you choose in the system's consumption prompt as the infusion, without asking again, and skips the action's own healing roll, since the infusion heals at the start of each of the target's turns. Older characters with the legacy Progression action keep working as before.
+- Cancel/dismiss actions (Cancel Regrowth Infusion, Cancel Self Abrasion, Dismiss Lashing, Dismiss Complex Illusion, Dismiss Disguise) were rebuilt as 3.x embedded actions, so they can be used again to end an infusion early.
+
+## Fixes
+### Character Regrowth
+- Fixed Regrowth healing too many times, especially with Extended Regrowth:
+    - Investiture is now expended as part of each heal on the target's turn (every n heals with Extended Regrowth, where n = your ranks in Progression), instead of on the caster's turn. Infusing N Investiture always gives N heals (N × rank with Extended Regrowth), no matter who acts first each round.
+    - Health is only restored once per round, even if a combatant's turn is started more than once (e.g. clicking "Mark as Active" again, or stepping the tracker back).
+    - Healing is now applied once, instead of being written twice.
+- The effect's displayed duration now accounts for Extended Regrowth.
+- Cancelling an infusion no longer fails if its effect was already removed, and a Regrowth effect whose caster's cancel action was deleted now removes itself.
+
+<br>
+
+----
+
 # Release 1.3.0
 <sup>2026-03-07</sup>
 

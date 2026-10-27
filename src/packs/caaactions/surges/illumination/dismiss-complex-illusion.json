@@ -10,24 +10,66 @@
             "chat": "",
             "short": ""
         },
-        "activation": {
-            "type": "none",
-            "cost": {
-                "value": null
-            },
-            "consume": [],
-            "flavor": "",
-            "attribute": "default",
-            "plotDie": false,
-            "opportunity": null,
-            "complication": null,
-            "uses": null
-        },
-        "damage": {},
         "modality": null,
         "events": {},
         "relationships": {},
-        "ancestry": null
+        "ancestry": null,
+        "__embedded": {
+            "items": [
+                {
+                    "type": "action",
+                    "name": "Dismiss Complex Illusion",
+                    "img": "icons/magic/light/hand-sparks-glow-yellow.webp",
+                    "_id": "YlnWv74soJLbXMuB",
+                    "system": {
+                        "id": "cancel-complex-illusion",
+                        "type": "basic",
+                        "description": {
+                            "value": "<p>Dismiss your complex illusion</p>",
+                            "chat": "",
+                            "short": ""
+                        },
+                        "primaryResource": "none",
+                        "resources": {
+                            "uses": null,
+                            "charges": null,
+                            "ammo": null
+                        },
+                        "modality": null,
+                        "events": {},
+                        "relationships": {},
+                        "activation": {
+                            "type": "utility",
+                            "cost": {
+                                "type": "fre"
+                            },
+                            "consumption": [],
+                            "flavor": ""
+                        },
+                        "damage": {
+                            "skill": "default",
+                            "attribute": "default",
+                            "formula": null,
+                            "type": null
+                        },
+                        "skillTest": {
+                            "skill": "default",
+                            "attribute": "default",
+                            "plotDie": false
+                        }
+                    },
+                    "effects": [],
+                    "folder": null,
+                    "sort": 0,
+                    "ownership": {
+                        "default": 0
+                    },
+                    "flags": {},
+                    "items": [],
+                    "_key": "!items!YlnWv74soJLbXMuB"
+                }
+            ]
+        }
     },
     "effects": [],
     "folder": "t6TK4I1u7tBI6pPs",
